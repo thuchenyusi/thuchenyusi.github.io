@@ -46,7 +46,7 @@ Python被广泛认为是强类型的，其原因大概有如下几条：
 
 Python也被广泛认为是动态类型的，其原因大概有如下几条：
 
-1. Python的名称（(名称/标识符（name, aka. identifier）和对象)[名称/标识符（name, aka. identifier）和对象]）可以换绑不同类型的对象。
+1. Python的名称（详见下文）可以换绑不同类型的对象。
 2. Python在运行时会进行动态类型检查。 
 
 同样以Python的标准实现CPython为基准。

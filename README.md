@@ -1,2 +1,2 @@
 # thuchenyusi.github.io
-Personal blog.
+My Personal blog | Made With Jekyll

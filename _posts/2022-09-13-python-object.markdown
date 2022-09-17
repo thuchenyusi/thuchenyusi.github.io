@@ -11,6 +11,8 @@ categories: study python
 
 Python中，一切皆对象。
 
+本文基于Python 3.10。
+
 ## 对象的组成
 
 在Python中，任何对象都有各自的标识号、类型和值。
@@ -97,6 +99,58 @@ Python中，对象可以依照可变性分为两类：可变对象和不可变�
 
 
 固定值是可变对象的最根本的属性，因此在Python的赋值语句中，如果左侧为不可变对象，则通常需要创建新的对象，再将名称和新对象绑定。
+
+实际上，考虑到容器的情况，不可变和值不可改变间仍然有着微妙的区别，我们并不能严格意义上说两者是等价的。
+
+最后，对象的可变性是由其类型决定的。
+
+### 常见类型的可变性
+
+既然对象的可变性是由其类型决定的，那我们就能够谈论不同对象类型的可变性。
+
+常见类型中，数字、字符串和元组是不可变的，而字典和列表是可变的。
+
+### 不可变容器中的可变对象
+
+之前提到，不可变和值不可改变间是有微妙区别的，其原因就在于在不可变容器对象如元组中，如果含有可变对象的引用，但该可变对象改变时，该不可变容器的值也会改变，但我们仍然认为其属于不可变对象，因为该容器所包含的对象集不变。
+
+可以这么说，在容器对象中，可变性和不可变性是有其包含的对象是否可变来决定的。
+
+### 自定义类的可变性
+
+用户自定义类**通常**是可变的。但可以通过定义__slots的属性，替换__dict__属性，阻止属性的新增，再覆盖类中的__setattr__方法以阻止修改现有属性。
+
+```python
+class ImmutableClass(object):
+    # __slots__可被赋值为任何非字符串的可迭代对象
+    __slots__ = ['attr1', 'attr2']
+    def __init__(self, abc):
+        super(ImmutableClass, self).__setattr__('attr1', attr1)
+    def __setattr__(self, name, value):
+        raise AttributeError("'%s' has no attribute %s" % (self.__class__, name))
+```
+
+### 可变对象作为函数参数默认值时的陷阱
+
+下面是官方文档中给出的经典的错误示范，在foo函数执行到第二回时，如果其key不同，将会导致mydict中含有两个数据项，而不是字面上所被理解的只有一个。
+
+其根本原因在于，mydict的默认值{}并不会在每次调用时创建新对象，而是仅仅在函数定义时创建一次，这样第二次调用该函数时，mydict绑定的对象和第一次调用时是同样的对象。
+
+```python
+def foo(mydict={}):  # Danger: shared reference to one dict for all calls
+    ... compute something ...
+    mydict[key] = value
+    return mydict
+```
+为了避免此问题，建议采用不可变对象None作为默认值并用于新建列表、字典等其他对象。
+
+官网中给出来的示例写法如下：
+
+```python
+def foo(mydict=None):
+    if mydict is None:
+        mydict = {}  # create a new dict for local namespace
+```
 
 ## 可哈希性（hashable）
 

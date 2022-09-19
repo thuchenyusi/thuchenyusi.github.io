@@ -124,8 +124,9 @@ Python中，对象可以依照可变性分为两类：可变对象和不可变�
 class ImmutableClass(object):
     # __slots__可被赋值为任何非字符串的可迭代对象
     __slots__ = ['attr1', 'attr2']
-    def __init__(self, abc):
+    def __init__(self, attr1， attr2):
         super(ImmutableClass, self).__setattr__('attr1', attr1)
+        super(ImmutableClass, self).__setattr__('attr2', attr2)
     def __setattr__(self, name, value):
         raise AttributeError("'%s' has no attribute %s" % (self.__class__, name))
 ```

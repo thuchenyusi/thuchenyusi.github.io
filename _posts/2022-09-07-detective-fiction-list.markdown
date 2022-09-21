@@ -4,6 +4,7 @@ title:  "读过的推理书"
 author: 卡夫卡的K
 date:   2022-09-07 23:05:29 +0800
 categories: book detective
+tags: [推理, 阅读]
 ---
 ## 书单
 - [ 福尔摩斯探案全集（上中下） ](https://book.douban.com/subject/1040211/)

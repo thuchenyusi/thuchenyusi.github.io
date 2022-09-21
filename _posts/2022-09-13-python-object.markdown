@@ -3,6 +3,7 @@ layout: post
 title:  "Python中的对象"
 date: 2022-09-14 01:31:55 +0800
 categories: learn python
+tags: [Python, 编程]
 ---
 
 ## 引言

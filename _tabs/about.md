@@ -15,10 +15,15 @@ order: 4
 > 饥不从猛虎食，暮不从野雀栖。野雀安无巢，游子为谁骄？
 
 > 我来到这个世界上，
+> 
 > 只带着纸、绳索和身影，
+> 
 > 为了在审判之前，
+> 
 > 宣读那些被判决了的声音：
+> 
 > 告诉你吧，世界，
+> 
 > 我——不——相——信！ 
 
 > But this long run is a misleading guide to current affairs. In the long run we are all dead. 

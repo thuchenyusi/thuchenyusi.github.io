@@ -23,7 +23,7 @@ timezone:
 
 title: 宜有阁                          # the main title
 
-tagline: 左之左之，君子宜之；右之右之，君子有之。   # it will display as the sub-title
+tagline: 左之左之，君子宜之；<br/>右之右之，君子有之。   # it will display as the sub-title
 
 description: >-                        # used by seo meta and the atom feed
   A personal blog.

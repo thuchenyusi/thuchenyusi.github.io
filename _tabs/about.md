@@ -1,7 +1,7 @@
 ---
-layout: page
-title: 格言
-permalink: /about/
+title: About
+icon: fas fa-info-circle
+order: 4
 ---
 
 > 左之左之，君子宜之。右之右之，君子有之。

@@ -2,7 +2,7 @@
 layout: post
 title:  "Python中的对象"
 date: 2022-09-14 01:31:55 +0800
-categories: study python
+categories: learn python
 ---
 
 ## 引言

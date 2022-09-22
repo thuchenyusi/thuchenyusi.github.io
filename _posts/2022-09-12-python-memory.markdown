@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Python内存"
+title:  "Python：内存"
 date:   2022-09-12 20:47:01 +0800
 categories: learn python
 tags: [Python, 编程]

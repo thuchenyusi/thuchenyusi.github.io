@@ -645,6 +645,10 @@ $sidebar-display: "sidebar-display";
   width: $sidebar-width;
   z-index: 99;
   background: var(--sidebar-bg);
+  background-size: 100%;
+    background-position: bottom;
+    background-repeat: no-repeat;
+    background-image: url(https://image.yurich.me/anime/sidebar/%E6%98%8E%E7%9F%B3%E3%81%95%E3%82%93_%E3%81%97%E3%81%A1.png);
 
   /* Hide scrollbar for Chrome, Safari and Opera */
   &::-webkit-scrollbar {

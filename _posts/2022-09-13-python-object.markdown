@@ -6,8 +6,6 @@ categories: learn python
 tags: [Python, 编程]
 ---
 
-## 引言
-
 对象是Python 中对数据的抽象。Python程序中的所有数据都是由对象或对象间关系来表示的。
 
 Python中，一切皆对象。

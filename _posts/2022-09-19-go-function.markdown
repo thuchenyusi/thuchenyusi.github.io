@@ -6,7 +6,6 @@ date:   2022-09-19 23:46:16 +0800
 categories: learn golang
 tags: [Go语言, 编程]
 ---
-## 引言
 
 本文基于Go 1.19版本。
 

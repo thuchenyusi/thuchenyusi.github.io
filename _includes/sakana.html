@@ -9,11 +9,5 @@
     }
 </style>
 <div class="sakana-box" style="display: flex;z-index: 10;  bottom: 0; right: 0px;"></div>
-<script src="https://cdn.jsdelivr.net/npm/sakana"></script>
-<script>
-    Sakana.init({
-        el: '.sakana-box',        // 启动元素 node 或 选择器
-        scale: .65,                // 缩放倍数
-        canSwitchCharacter: true, // 允许换角色
-    });
-</script>
+<script src="{{ '/assets/js/sakana/sakana.js' | relative_url }}"></script>
+<script src="{{ '/assets/js/sakana/sakana_init.js' | relative_url }}"></script>

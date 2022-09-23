@@ -1,7 +1,7 @@
 ---
 name: "\U0001F680 Feature Request"
 about: As a user, I want to request a New Feature on the product.
-labels: type/feature-request
+labels: enhance
 ---
 
 ## Feature Request

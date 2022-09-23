@@ -69,6 +69,8 @@
           https://github.com/{{ site.github.username }}
         {%- elsif entry.type == 'twitter' -%}
           https://twitter.com/{{ site.twitter.username }}
+        {%- elsif entry.type == 'steam' -%}
+          https://steamcommunity.com/id/{{ site.steam.username }}
         {%- elsif entry.type == 'email' -%}
           {% assign email = site.social.email | split: '@' %}
           javascript:location.href = 'mailto:' + ['{{ email[0] }}','{{ email[1] }}'].join('@')

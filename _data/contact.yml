@@ -6,10 +6,17 @@
 # -
 #   type: twitter
 #   icon: 'fab fa-twitter'
+
+-
+  type: steam
+  icon: 'fab fa-steam'
+  noblank: true
+
 -
   type: email
   icon: 'fas fa-envelope'
   noblank: true            # open link in current tab
+
 -
   type: rss
   icon: 'fas fa-rss'

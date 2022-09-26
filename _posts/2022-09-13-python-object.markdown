@@ -1,6 +1,7 @@
 ---
 layout: post
-title:  "Python：对象"
+title:  Python：对象
+author: me
 date: 2022-09-14 01:31:55 +0800
 categories: learn python
 tags: [Python, 编程]

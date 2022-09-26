@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  "Go：Hello, 世界"
-author: 卡夫卡的K
+title:  Go：Hello, 世界
+author: me
 date:   2022-09-07 20:51:14 +0800
 categories: learn golang
 tags: [Go语言, 编程]

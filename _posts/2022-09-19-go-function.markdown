@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  "Go：函数"
-author: 卡夫卡的K
+title:  Go：函数
+author: me
 date:   2022-09-19 23:46:16 +0800
 categories: learn golang
 tags: [Go语言, 编程]

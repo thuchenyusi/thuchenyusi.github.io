@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  "C语言：宏"
-author: 卡夫卡的K
+title:  C语言：宏
+author: me
 date:   2022-09-22 00:47:35 +0800
 categories: learn clang
 tags: [C语言, 编程]

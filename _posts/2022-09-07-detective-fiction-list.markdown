@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  "读过的推理书"
-author: 卡夫卡的K
+title:  读过的推理书
+author: me
 date:   2022-09-07 23:05:29 +0800
 categories: book detective
 tags: [推理, 阅读]

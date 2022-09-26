@@ -93,8 +93,8 @@
         // Default or start event
         if (typeof event === 'undefined' || event === 'start') {
 
-            // Set the overflow-x CSS property on the target element to prevent horizontal scrollbars
-            target.css({ 'overflow-x': 'hidden' });
+            // // Set the overflow-x CSS property on the target element to prevent horizontal scrollbars
+            // target.css({ 'overflow-x': 'hidden' });
 
             // Function that inserts new petals into the document
             var petalCreator = function () {
@@ -176,5 +176,5 @@
 }(jQuery));
 
 $(document).ready(function () {
-    $('body').sakura();
+    $("body").sakura();
 });

@@ -77,10 +77,3 @@ post:
 categories:
   category_measure: categorias
   post_measure: entradas
-
-# TODO translate
-alert:
-  note: Note
-  tip: Tip
-  warning: Warning
-  important: Important

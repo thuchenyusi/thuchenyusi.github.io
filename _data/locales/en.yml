@@ -81,10 +81,3 @@ categories:
   post_measure:
     singular: post
     plural: posts
-
-alert:
-  note: Note
-  tip: Tip
-  warning: Warning
-  important: Important
-  

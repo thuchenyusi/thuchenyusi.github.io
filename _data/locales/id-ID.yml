@@ -77,3 +77,10 @@ post:
 categories:
   category_measure: kategori
   post_measure: Postingan
+  
+# TODO translate
+alert:
+  note: Note
+  tip: Tip
+  warning: Warning
+  important: Important

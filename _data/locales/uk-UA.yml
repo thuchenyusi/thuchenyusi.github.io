@@ -77,3 +77,10 @@ post:
 categories:
   category_measure: категорії
   post_measure: публікації
+
+# TODO translate
+alert:
+  note: Note
+  tip: Tip
+  warning: Warning
+  important: Important

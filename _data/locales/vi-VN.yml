@@ -75,3 +75,10 @@ post:
 categories:
   category_measure: danh mục
   post_measure: bài viết
+
+# TODO translate
+alert:
+  note: Note
+  tip: Tip
+  warning: Warning
+  important: Important

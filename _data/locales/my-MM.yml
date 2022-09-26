@@ -77,3 +77,10 @@ post:
 categories:
   category_measure: ကဏ္ဍများ
   post_measure: ပို့စ်များ
+
+# TODO translate
+alert:
+  note: Note
+  tip: Tip
+  warning: Warning
+  important: Important

@@ -76,3 +76,10 @@ post:
 categories:
   category_measure: 个分类
   post_measure: 篇文章
+
+# TODO translate
+alert:
+  note: 注释
+  tip: 提示
+  warning: 警告
+  important: 重要

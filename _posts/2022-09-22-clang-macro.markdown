@@ -295,7 +295,7 @@ i = (j+k);
 c = (+b);
 ```
 
-## 宏的记号粘合
+## 宏的记号粘合（Token Concatenation）
 
 ##运算符可以将两个记号粘合在一起，成为一个新的记号，如下所示：
 
@@ -306,6 +306,64 @@ int MK_ID(1), MK_ID(2), MK_ID(3);
 // is equivalent to
 int i1, i2, i3;
 ```
+
+通过记号粘合，可以实现更为高级的代码复用，如结构体数组定义：
+```c
+struct command
+{
+  char *name;
+  void (*function) (void);
+};
+
+#define COMMAND(NAME)  { #NAME, NAME ## _command }
+
+struct command commands[] =
+{
+  COMMAND (quit),
+  COMMAND (help),
+};
+// is equivalent to
+struct command commands[] =
+{
+  { "quit", quit_command },
+  { "help", help_command },
+};
+```
+
+又或者是不同类型变量的通用算法：
+```c
+#define DeclareSort(prefix, type) \
+static int \
+_DeclareSort_ ## prefix ## _Compare(const void *a, const void *b) \
+{ \
+    const type *aa; const type *bb; \
+    aa = a; bb = b; \
+    if(aa < bb) return -1; \
+    else if(bb < aa) return 1; \
+    else return 0; \
+} \
+\
+void \
+prefix ## _sort(type *a, int n)\
+{ \
+    qsort(a, sizeof(type), n, _DeclareSort_ ## prefix ## _Compare); \
+}
+
+#include <stdlib.h>
+
+/* note: must appear outside of any function, and has no trailing semicolon */
+DeclareSort(int, int)
+
+int
+main(int argc, char **argv)
+{
+    int *a;
+    int n;
+    int_sort(a, n);
+}
+```
+
+记号粘合可以将2个数字粘合为1个数字（如1.5），也可将多个字符粘合成1个多字符运算符（如+=）。
 
 ## 预定义宏
 
@@ -430,4 +488,17 @@ do {
     get(s);
     put(s);
 } while(0);
+```
+
+### foreach类型宏
+
+另外一种常见的写法是将for语句或类似for语句的功能用宏来表示，如下所示：
+
+```c
+#define UpTo(i, n) for((i) = 0; (i) < (n); (i)++)
+
+UpTo(i, n)
+{
+    ...
+}
 ```

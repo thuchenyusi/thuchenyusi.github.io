@@ -6,6 +6,9 @@ date:   2022-09-07 23:05:29 +0800
 categories: book detective
 tags: [推理, 阅读]
 ---
+
+对推理文学感兴趣，但并不算推理爱好者，随便列个自己读过的推理书的书单吧，尽管可能不全。
+
 ## 书单
 - [ 福尔摩斯探案全集（上中下） ](https://book.douban.com/subject/1040211/)
 - [ 布朗神父探案全集（上下） ](https://book.douban.com/subject/3035311/)

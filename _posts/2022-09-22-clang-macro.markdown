@@ -115,9 +115,9 @@ if (BUFFER_SIZE > 256)
 
 根据宏的实际作用，可以把宏分为两类：类对象的宏和类函数的宏。
 
-## 类对象的宏（Object-like Macros）
+## 类对象的宏
 
-类对象的宏，简单的将标识符展开为替换列表，如下所示。
+类对象的宏（Object-like Macros），简单的将标识符展开为替换列表，如下所示。
 
 ```c
 #define BUFFER_SIZE 1024

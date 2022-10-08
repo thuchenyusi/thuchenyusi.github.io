@@ -198,3 +198,6 @@ print(r())
 ```
 
 具体使用细节另文介绍。
+
+## 参考
+- [Python Document](https://docs.python.org)

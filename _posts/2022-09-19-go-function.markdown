@@ -106,3 +106,73 @@ func Sin(x float64) float64 // 使用汇编语言实现
 ## 多返回值
 
 ## 错误处理
+
+Go语言采用返回值的方式进行错误处理，这类似于C语言的处理方式。函数将错误信息返回给调用者，由调用者决定如何处理，很多情况下调用者也不清楚应该如何处理该错误，那么往往会再将该错误返回值传递下去，通过层层返回到逻辑上便于处理的层级进行处理。以GOPL中的例子为例：
+
+```go
+func findLinks(url string) ([]string, error) {
+    resp, err := http.Get()
+    if err != nil {
+        return nil, err
+    }
+    if resp.StatusCode != http.StatusOK {
+        resp.Body.Close()
+        return nil, fmt.Errorf("getting %s %s", url, resp.Status)
+    }
+    doc, err := html.Parse(resp.Body)
+    resp.Body.Close()
+    if err != nil {
+        return nil, fmt.Errof("parsing %s as HTML: %v", url, err)
+    }
+    return visit(nil, doc), nil
+}
+```
+
+从例子中可以看到Go语言中关于错误处理的几个通用做法：
+
+1. 错误为最后1个返回值，且为error类型。
+2. 当函数允许成功时，错误返回为nil。
+3. 对于子函数的错误，如果不好处理，会返回给上级函数。
+
+不过也并非所有函数的错误类型均为error类型，如果错误情况只有一种，则通常用布尔类型进行表示。如下所示：
+
+```go
+value, ok := cache.Lookup(key)
+if !ok {
+    // ...cache[key]不存在
+}
+```
+
+其中返回值ok即为布尔型，正确代表无错误发生。
+
+Go语言并未采用类似try-catch的异常机制来处理通常的错误，因为Go语言的设计者认为try-catch的异常机制将导致栈跟踪信息难以理解。但这并不代表Go语言没有异常机制，Go语言存在panic-recover机制，不过这套机制只被用于处理程序Bug导致的预料外的结果，对于可预见的错误还是应该通过通常的错误处理方式进行处理。
+
+和C进行比较的话，C语言的返回值往往既能表示正确的值又能表示错误的值，光靠返回值有时不足以表明其具体错误类型，因此可能还需要通过其他方式将错误信息传递出来，比如常见的通过errno传递错误信息。
+
+```c
+if (somecall() == -1) {
+    printf("somecall() failed\n");
+    if (errno == ...) { ... }
+}
+```
+
+而Go语言中，多返回值的特性，本身就使得错误返回值能够只需表达错误情况，而不需要传递程序正常运行所需要的返回值。error类型本身也可以传递字符串作为错误标识，其表达力足够清晰表达大部分错误。error是接口类型，其包含返回错误信息的方法：
+
+```go
+type error interface {
+    Error() string
+}
+```
+
+error包也很简单，只有4行。如下所示：
+
+```go
+package errors
+func New(text string) error { return &errorString{text} }
+type errorString struct { text string }
+func (e *errorString) Error() string { return e.text }
+```
+
+其中errorString对string做了简单封装，目的是避免后续布局变更。而满足error接口的是*errorString指针，这样就能避免
+
+## 宕机

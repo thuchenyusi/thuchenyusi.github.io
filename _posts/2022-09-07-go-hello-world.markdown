@@ -60,11 +60,13 @@ func main(argc int, argv []string) int {
 考虑[Go's Declaration Syntax](https://go.dev/blog/declaration-syntax)中介绍的某个例子，函数的参数和返回值均含有函数指针：
 
 C：
+
 ```C
 int (*(*fp)(int (*)(int, int), int))(int, int)
 ```
 
 Go：
+
 ```Go
 f func(func(int,int) int, int) func(int, int) int
 ```

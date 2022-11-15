@@ -72,7 +72,7 @@ func sub(x int, y int) (z int) {
 
 Go语言中没有默认参数值，也不能指定实参名，因此GO语言中需要提供实参来对应函数中的每个形参，并保持调用顺序的一致。以下在Python中的语法，Go中不存在：
 
-```Python
+```python
 def func(a=2, b=3, c=5):
     return a + 2*b + 3*c
 

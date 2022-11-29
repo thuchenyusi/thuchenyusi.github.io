@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  Go：Hello, 世界
+title:  Hello, 世界 in Go语言
 author: me
 date:   2022-09-07 20:51:14 +0800
 categories: learn golang

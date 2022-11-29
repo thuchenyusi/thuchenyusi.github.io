@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  Python：对象
+title:  一切皆对象：Python中的对象概念
 author: me
 date: 2022-09-14 01:31:55 +0800
 categories: learn python

@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  Go：函数
+title:  Go语言的函数
 author: me
 date:   2022-09-19 23:46:16 +0800
 categories: learn golang
@@ -173,6 +173,10 @@ type errorString struct { text string }
 func (e *errorString) Error() string { return e.text }
 ```
 
-其中errorString对string做了简单封装，目的是避免后续布局变更。而满足error接口的是*errorString指针，这样就能避免
+其中errorString对string做了简单封装，目的是避免后续布局变更。而满足error接口的是*errorString指针，这样就能使得每次New分配的error实例都不相等。
+
+```go
+fmt.Println(errors.New("EOF") == errors.New("EOF")) // "false"
+```
 
 ## 宕机

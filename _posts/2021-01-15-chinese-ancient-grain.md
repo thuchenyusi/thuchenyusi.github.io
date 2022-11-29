@@ -3,7 +3,7 @@ layout: post
 title:  中国古代主要粮食作物的种类继承与嬗替
 author: me
 date:   2021-01-25 08:41:20 +0800
-categories: learn linux
+categories: history
 tags: [历史地理, 历史, 地理, 农业]
 ---
 

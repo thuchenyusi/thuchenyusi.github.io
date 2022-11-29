@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  C语言：宏
+title:  file命令是如何工作的？
 author: me
 date:   2022-10-25 15:59:00 +0800
 categories: learn linux

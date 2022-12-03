@@ -103,9 +103,9 @@ func Sin(x float64) float64 // 使用汇编语言实现
 
 和许多语言类似，Go支持递归，递归过程中也会有函数调用栈的入栈和出栈。但与固定长度大小的函数调用栈的语言不同，Go同时还支持可变长度的函数调用栈，函数调用栈的大小随着使用增加可达到1GB，因此通常情况下不用担心函数递归时常会担心的栈溢出问题。
 
-## 多返回值
+## 支持多返回值的return语句
 
-### 多返回值用法
+### return语句用法
 
 Go语言中的函数能返回多个结果，一个常见的用法具备两个返回值，一个为期望的计算结果，另一个为错误值。如下所示：
 
@@ -145,17 +145,19 @@ func findLinks(url string) ([]string, error) {
 
 注意Go语言虽然能够通过垃圾回收机制回收内存，但不能通过此机制释放未使用的操作系统资源（如打开文件和网络连接），无论是否发生错误，都必须显示将其关闭，防止资源泄露。
 
-### 使用或忽略返回值
-
-如果需要函数的返回值，必须将其显示赋值给变量，如果其中有部分返回值不需要，则可以将其赋值给空标识符。
+当然返回一个同样多返回值的函数的调用也是允许的行为，如下所示：
 
 ```go
-links, err := findLinks(url)
-// ignore error
-links, _ := findLinks(url)
+func complexF1() (re float64, im float64) {
+	return -7.0, -4.0
+}
+
+func complexF2() (re float64, im float64) {
+	return complexF1()
+}
 ```
 
-### 裸返回
+### 命名返回值和裸返回
 
 函数的返回值（部分或全部）可以命名。命名的返回值可以带来更好的可读性，同时（返回值都被命名时）也带来了裸返回的新返回方法。如下所示：
 
@@ -183,6 +185,29 @@ func CountWordsAndImages(url string) (words, images int, err error) {
 ```
 
 虽然裸返回可以消除重复代码，但降低了代码可读性，应当保守使用。
+
+注意在实现中，一个编译器如果发现和返回值名字相同的不同实体（entity）被定义，可能会禁止此处使用裸返回。如下所示：
+
+```go
+func f(n int) (res int, err error) {
+	if _, err := f(n-1); err != nil {
+		return  // invalid return statement: err is shadowed
+	}
+	return
+}
+```
+
+在上述示例中，if语句中*_, err := f(n-1)*重新定义了新的名为err的实体，导致err名字对应的是if语句中新的err实体，而非函数f的返回值err。在这种情况下，编译器可以拒绝在if语句的作用域内使用裸返回。
+
+### 使用或忽略返回值
+
+如果需要函数的返回值，必须将其显示赋值给变量，如果其中有部分返回值不需要，则可以将其赋值给空标识符。
+
+```go
+links, err := findLinks(url)
+// ignore error
+links, _ := findLinks(url)
+```
 
 ## 错误处理
 
@@ -269,6 +294,7 @@ fmt.Println(errors.New("EOF") == errors.New("EOF")) // "false"
 ## 函数变量
 
 ### 函数是一等公民
+
 ### 匿名函数
 
 ## 变长函数

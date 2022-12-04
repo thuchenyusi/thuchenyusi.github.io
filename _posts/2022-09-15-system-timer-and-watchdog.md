@@ -179,7 +179,10 @@ struct itimerspec {
 #include <signal.h>
 #include <time.h>
 
-const struct itimerspec watchdogInterval = {{2, 0}, {2, 0}};
+const struct itimerspec watchdogInterval = {
+  {2, 0},
+  {2, 0},
+};
 
 timer_t watchdogTimer;
 

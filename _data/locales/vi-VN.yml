@@ -15,6 +15,7 @@ tabs:
   tags: Các thẻ
   archives: Lưu trữ
   about: Giới thiệu
+  labs: phòng thí nghiệm
 
 # the text displayed in the search bar & search results
 search:
@@ -39,7 +40,6 @@ copyright:
   verbose: >-
     Trừ khi có ghi chú khác, các bài viết đăng trên trang này được cấp phép bởi tác giả theo giấy phép Creative Commons Attribution 4.0 International (CC BY 4.0).
 meta: Trang web này được tạo bởi :PLATFORM với chủ đề :THEME.
-
 not_found:
   statment: Xin lỗi, chúng tôi đã đặt nhầm URL hoặc đường dẫn trỏ đến một trang nào đó không tồn tại.
 

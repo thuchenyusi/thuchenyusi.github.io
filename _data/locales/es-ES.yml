@@ -15,6 +15,7 @@ tabs:
   tags: Etiquetas
   archives: Archivo
   about: Acerca de
+  labs: Laboratorios
 
 # the text displayed in the search bar & search results
 search:
@@ -59,7 +60,7 @@ post:
   pageview_measure: visitas
   read_time:
     unit: min
-    prompt: ' de lectura'
+    prompt: " de lectura"
   relate_posts: Lecturas adicionales
   share: Compartir
   button:

@@ -15,6 +15,7 @@ tabs:
   tags: 태그
   archives: 아카이브
   about: 정보
+  labs: 실험실
 
 # the text displayed in the search bar & search results
 search:

@@ -169,6 +169,8 @@ O 10\
 "\xab" "c" /* two characters */
 ```
 
+此外还有通用字符的转义，具体可以参见文献[^escape]。
+
 ## 阶段6
 
 ### 相邻字符串合并
@@ -211,12 +213,22 @@ u"helloworld"
 * [Open Standards/C - Project status and milestones](https://www.open-std.org/jtc1/sc22/wg14/www/projects)
   
   可公开获取的C标准草案，也是本文主要参考源。
+
+* [cppreference/翻译阶段](https://zh.cppreference.com/w/c/language/translation_phases)
+  
+  cppreference中关于C语言翻译阶段的描述。
+
 * [GCC/The C Preprocessor](https://gcc.gnu.org/onlinedocs/cpp/index.html)
   
   GCC预处理器的相关说明。
+
 * [Microsoft/C language documentation](https://learn.microsoft.com/en-us/cpp/c-language/)
   
   基于MSVC的C语言文档。
+
 * [MERS BYU/standardC](https://www.mers.byu.edu/docs/standardC/)
   
   杨百翰大学有关C标准相关的文档，可供参考。
+
+## 脚注
+[^escape]: [cppreference/转义序列](https://zh.cppreference.com/w/c/language/translation_phases)

@@ -255,6 +255,7 @@ STATIC_ASSERT (STRUCT_OFFSET_OF (vnet_buffer_opaque_t, ipsec.sad_index) ==
 * [Open Standards/C - Project status and milestones](https://www.open-std.org/jtc1/sc22/wg14/www/projects)
   
   可公开获取的C标准草案，也是本文主要参考源。
+
 * [GCC/The C Preprocessor](https://gcc.gnu.org/onlinedocs/cpp/index.html)
   
   GCC预处理器的相关说明。

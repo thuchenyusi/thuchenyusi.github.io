@@ -302,7 +302,7 @@ c = (+b);
 如下所示：
 
 ```c
-#define MK_ID(n) i#n
+#define MK_ID(n) i##n
 
 int MK_ID(1), MK_ID(2), MK_ID(3);
 // is equivalent to

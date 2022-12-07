@@ -28,6 +28,10 @@ order: 5
 
   可以在这查POSIX标准
 
+- [Brendan Gregg's Homepage](https://www.brendangregg.com/)
+
+  性能大神Brendan Gregg的个人主页，介绍了很多性能分析和性能调优相关的内容
+
 - [perfbookj](https://mirrors.edge.kernel.org/pub/linux/kernel/people/paulmck/perfbook/perfbook.html)
 
   大名鼎鼎的perfbook

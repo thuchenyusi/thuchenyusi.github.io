@@ -4,7 +4,7 @@ title:  POSIX定时器和看门狗实现
 author: me
 date: 2022-09-15 14:05:05 +0800
 categories: learn linux
-tags: [C语言, 编程, Linux]
+tags: [C, 编程, Linux]
 ---
 
 ## 创建POSIX定时器
@@ -40,30 +40,30 @@ clockid确定定时器所用时钟类型，常见的有以下几种：
 ```c
 #ifdef __USE_POSIX199309
 /* Identifier for system-wide realtime clock.  */
-# define CLOCK_REALTIME			0
+# define CLOCK_REALTIME   0
 /* Monotonic system-wide clock.  */
-# define CLOCK_MONOTONIC		1
+# define CLOCK_MONOTONIC  1
 /* High-resolution timer from the CPU.  */
-# define CLOCK_PROCESS_CPUTIME_ID	2
+# define CLOCK_PROCESS_CPUTIME_ID 2
 /* Thread-specific CPU-time clock.  */
-# define CLOCK_THREAD_CPUTIME_ID	3
+# define CLOCK_THREAD_CPUTIME_ID 3
 /* Monotonic system-wide clock, not adjusted for frequency scaling.  */
-# define CLOCK_MONOTONIC_RAW		4
+# define CLOCK_MONOTONIC_RAW  4
 /* Identifier for system-wide realtime clock, updated only on ticks.  */
-# define CLOCK_REALTIME_COARSE		5
+# define CLOCK_REALTIME_COARSE  5
 /* Monotonic system-wide clock, updated only on ticks.  */
-# define CLOCK_MONOTONIC_COARSE		6
+# define CLOCK_MONOTONIC_COARSE  6
 /* Monotonic system-wide clock that includes time spent in suspension.  */
-# define CLOCK_BOOTTIME			7
+# define CLOCK_BOOTTIME   7
 /* Like CLOCK_REALTIME but also wakes suspended system.  */
-# define CLOCK_REALTIME_ALARM		8
+# define CLOCK_REALTIME_ALARM  8
 /* Like CLOCK_BOOTTIME but also wakes suspended system.  */
-# define CLOCK_BOOTTIME_ALARM		9
+# define CLOCK_BOOTTIME_ALARM  9
 /* Like CLOCK_REALTIME but in International Atomic Time.  */
-# define CLOCK_TAI			11
+# define CLOCK_TAI   11
 
 /* Flag to indicate time is absolute.  */
-# define TIMER_ABSTIME			1
+# define TIMER_ABSTIME   1
 #endif
 ```
 
@@ -112,16 +112,16 @@ sigev_notify为通知方法，常用的有以下几种：
 /* `sigev_notify' values.  */
 enum
 {
-  SIGEV_SIGNAL = 0,		/* Notify via signal.  */
-# define SIGEV_SIGNAL	SIGEV_SIGNAL
-  SIGEV_NONE,			/* Other notification: meaningless.  */
-# define SIGEV_NONE	SIGEV_NONE
-  SIGEV_THREAD,			/* Deliver via thread creation.  */
-# define SIGEV_THREAD	SIGEV_THREAD
+  SIGEV_SIGNAL = 0,  /* Notify via signal.  */
+# define SIGEV_SIGNAL SIGEV_SIGNAL
+  SIGEV_NONE,   /* Other notification: meaningless.  */
+# define SIGEV_NONE SIGEV_NONE
+  SIGEV_THREAD,   /* Deliver via thread creation.  */
+# define SIGEV_THREAD SIGEV_THREAD
 
-  SIGEV_THREAD_ID = 4		/* Send signal to specific thread.
-				   This is a Linux extension.  */
-#define SIGEV_THREAD_ID	SIGEV_THREAD_ID
+  SIGEV_THREAD_ID = 4  /* Send signal to specific thread.
+       This is a Linux extension.  */
+#define SIGEV_THREAD_ID SIGEV_THREAD_ID
 };
 ```
 
@@ -208,9 +208,9 @@ void ExtendWatchdogExpiry(void) {
 
 ## 参考
 
-* [man7.org/timer_create(2)](https://man7.org/linux/man-pages/man2/timer_create.2.html)
+- [man7.org/timer_create(2)](https://man7.org/linux/man-pages/man2/timer_create.2.html)
 
-* [Microsoft/Use a system timer as a watchdog](https://learn.microsoft.com/en-us/azure-sphere/app-development/watchdog-timer)
+- [Microsoft/Use a system timer as a watchdog](https://learn.microsoft.com/en-us/azure-sphere/app-development/watchdog-timer)
 
 ## 脚注
 

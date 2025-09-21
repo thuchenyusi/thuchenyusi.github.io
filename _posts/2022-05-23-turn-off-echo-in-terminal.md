@@ -4,11 +4,11 @@ title:  如何关闭Linux终端的回显？
 author: me
 date:   2022-05-23 11:17:00 +0800
 categories: learn linux
-tags: [C语言, Linux, 编程]
+tags: [C, Linux, 编程]
 ---
 
-
 ## 通过shell命令关闭回显
+
 在Linux中通过stty相关指令可以关闭终端的回显，如下所示。
 
 ```bash
@@ -27,6 +27,7 @@ read -s password
 ```
 
 ## C语言关闭回显
+
 如果是为了输入密码而关闭回显的话，在C语言中，传统上有getpass函数。
 
 ```c

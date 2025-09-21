@@ -9,7 +9,9 @@ tags: [Go语言, 编程]
 
 > 本文基于Go 1.19版本。
 {: .prompt-info }
+
 ## 声明
+
 Go语言中，函数的声明由名字、形参列表、返回列表（可选）和函数体构成，注意Go对代码格式要求比较严格：
 
 ```go
@@ -111,35 +113,35 @@ Go语言中的函数能返回多个结果，一个常见的用法具备两个返
 
 ```go
 func main() {
-	for _, url := range os.Args[1:] {
-		links, err := findLinks(url)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "findlinks2: %v\n", err)
-			continue
-		}
-		for _, link := range links {
-			fmt.Println(link)
-		}
-	}
+ for _, url := range os.Args[1:] {
+  links, err := findLinks(url)
+  if err != nil {
+   fmt.Fprintf(os.Stderr, "findlinks2: %v\n", err)
+   continue
+  }
+  for _, link := range links {
+   fmt.Println(link)
+  }
+ }
 }
 
 // findLinks performs an HTTP GET request for url, parses the
 // response as HTML, and extracts and returns the links.
 func findLinks(url string) ([]string, error) {
-	resp, err := http.Get(url)
-	if err != nil {
-		return nil, err
-	}
-	if resp.StatusCode != http.StatusOK {
-		resp.Body.Close()
-		return nil, fmt.Errorf("getting %s: %s", url, resp.Status)
-	}
-	doc, err := html.Parse(resp.Body)
-	resp.Body.Close()
-	if err != nil {
-		return nil, fmt.Errorf("parsing %s as HTML: %v", url, err)
-	}
-	return visit(nil, doc), nil
+ resp, err := http.Get(url)
+ if err != nil {
+  return nil, err
+ }
+ if resp.StatusCode != http.StatusOK {
+  resp.Body.Close()
+  return nil, fmt.Errorf("getting %s: %s", url, resp.Status)
+ }
+ doc, err := html.Parse(resp.Body)
+ resp.Body.Close()
+ if err != nil {
+  return nil, fmt.Errorf("parsing %s as HTML: %v", url, err)
+ }
+ return visit(nil, doc), nil
 }
 ```
 
@@ -149,11 +151,11 @@ func findLinks(url string) ([]string, error) {
 
 ```go
 func complexF1() (re float64, im float64) {
-	return -7.0, -4.0
+ return -7.0, -4.0
 }
 
 func complexF2() (re float64, im float64) {
-	return complexF1()
+ return complexF1()
 }
 ```
 
@@ -190,10 +192,10 @@ func CountWordsAndImages(url string) (words, images int, err error) {
 
 ```go
 func f(n int) (res int, err error) {
-	if _, err := f(n-1); err != nil {
-		return  // invalid return statement: err is shadowed
-	}
-	return
+ if _, err := f(n-1); err != nil {
+  return  // invalid return statement: err is shadowed
+ }
+ return
 }
 ```
 

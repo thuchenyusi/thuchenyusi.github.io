@@ -244,8 +244,8 @@ STATIC_ASSERT_OFFSET_OF (ipsec_sa_t, cacheline2, 2 * CLIB_CACHE_LINE_BYTES);
  * the buffer meta data
  */
 STATIC_ASSERT (STRUCT_OFFSET_OF (vnet_buffer_opaque_t, ipsec.sad_index) ==
-		 STRUCT_OFFSET_OF (vnet_buffer_opaque_t, ip.save_protocol),
-	       "IPSec data is overlapping with IP data");
+   STRUCT_OFFSET_OF (vnet_buffer_opaque_t, ip.save_protocol),
+        "IPSec data is overlapping with IP data");
 ```
 
 可以看出，如果不适用静态断言在编译期做检查，那么就必须在运行时才可能发现相应问题。而如内存对齐这类要求，很可能在修改代码过程中被破坏而未被发现，然而通过静态断言的手段，则能够有效的对此类问题进行检查。

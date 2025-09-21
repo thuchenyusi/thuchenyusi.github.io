@@ -57,8 +57,8 @@ printf( "What?\?!\n" );
 ```c
 int trigraphsavailable() // returns 0 or 1; language standard C99 or later
 {
-	// are trigraphs available??/
-	return 0;
+ // are trigraphs available??/
+ return 0;
 #return 1;
 }
 ```
@@ -91,6 +91,7 @@ int x[] = { NUMBERS };
 // is equivalent to
 int x[] = { 1, 2, 3 };
 ```
+
 ## 阶段3
 
 ### 记号化
@@ -141,10 +142,12 @@ O 10\
 4. #progma指令（或等价的_Progma一元运算符），最常见的有#progma once，该指令和编译器高度相关，许多行为都取决于实现，本文也不详细叙述。
 
 此外还有#error和#line等指令。
+
 1. #error通常和#if等条件包含指令一同使用，用于在预处理期检测错误。
 2. #line则是在文件存在复杂包含关系时会使用，和__LINE__联合使用方便定位错误。
 
 如下cJSON中的示例，利用#error检测头文件版本和源文件版本是否一致。
+
 ```c
 /* This is a safeguard to prevent copy-pasters from using incompatible C and header files */
 #if (CJSON_VERSION_MAJOR != 1) || (CJSON_VERSION_MINOR != 7) || (CJSON_VERSION_PATCH != 14)
@@ -231,4 +234,5 @@ u"helloworld"
   杨百翰大学有关C标准相关的文档，可供参考。
 
 ## 脚注
+
 [^escape]: [cppreference/转义序列](https://zh.cppreference.com/w/c/language/translation_phases)

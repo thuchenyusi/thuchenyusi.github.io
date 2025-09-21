@@ -7,23 +7,33 @@ order: 4
 > 左之左之，君子宜之。右之右之，君子有之。
 >
 > 《诗·小雅·裳裳者华》
+
 <!-- MD028/no-blanks-blockquote -->
+
 > 业精于勤荒于嬉，学成于思毁于随。
 >
 > 韩愈《进学解》
+
 <!-- MD028/no-blanks-blockquote -->
+
 > 器识为先，文艺其从，立德立言，无问西东。
 >
 > 《清华大学校歌》
+
 <!-- MD028/no-blanks-blockquote -->
+
 > 宽柔以教，不报无道，南方之强也。君子居之。
 >
 > 《中庸》
+
 <!-- MD028/no-blanks-blockquote -->
+
 > 饥不从猛虎食，暮不从野雀栖。野雀安无巢，游子为谁骄？
 >
 > 《猛虎行》
+
 <!-- MD028/no-blanks-blockquote -->
+
 > 我来到这个世界上，
 >
 > 只带着纸、绳索和身影，
@@ -37,23 +47,39 @@ order: 4
 > 我——不——相——信！
 >
 > 北岛《回答》
+
 <!-- MD028/no-blanks-blockquote -->
+
 > But this long run is a misleading guide to current affairs. In the long run we are all dead.
 >
 > John Maynard Keynes
+>
+> 然而，从长远来看，这对于时下的事务是个误导。因为从长远来看，我们都死了。
+>
+> 约翰·梅纳德·凯恩斯
+
 <!-- MD028/no-blanks-blockquote -->
+
 > Il n'y a qu'un problème philosophique vraiment sérieux : c'est le suicide.
 >
 > Albert Camus
+>
+> 真正严肃的哲学问题只有一个，那便是自杀
+>
+> 阿尔贝·加缪
+
 <!-- MD028/no-blanks-blockquote -->
+
 > All models are wrong; but some are useful.
 >
 > George E. P. Box
 >
-> 所有模型都是错的 但有些是有用的。
+> 所有模型都是错的，但有些是有用的。
 >
 > 乔治·E·P·博克斯
+
 <!-- MD028/no-blanks-blockquote -->
+
 > Sie aber gebietet uns, festzustellen, daß heute für alle jene vielen, die auf neue Propheten und Heilande harren, die Lage die gleiche ist, wie sie aus jenem schönen, unter die Jesaja-Orakel aufgenommenen edomitischen Wächterlied in der Exilszeit klingt: „Es kommt ein Ruf aus Seir in Edom: Wächter, wie lang noch die Nacht? Der Wächter spricht: Es kommt der Morgen, aber noch ist es Nacht. Wenn ihr fragen wollt, kommt ein ander Mal wieder.“ Das Volk, dem das gesagt wurde, hat gefragt und geharrt durch weit mehr als zwei Jahrtausende, und wir kennen sein erschütterndes Schicksal. Daraus wollen wir die Lehre ziehen: daß es mit dem Sehnen und Harren allein nicht getan ist, und es anders machen: an unsere Arbeit gehen und der „Forderung des Tages“ gerecht werden – menschlich sowohl wie beruflich. Die aber ist schlicht und einfach, wenn jeder den Dämon findet und ihm gehorcht, der seines Lebens Fäden hält.
 >
 > Max Weber in Wissenschaft als Beruf

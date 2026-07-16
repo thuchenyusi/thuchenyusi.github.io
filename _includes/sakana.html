@@ -7,7 +7,53 @@
         transform-origin: 100% 100%;
         /* 从右下开始变换 */
     }
+
+    /* 手机上拖动角色时不触发页面滚动 */
+    .sakana-box .sakana-character {
+        touch-action: none;
+    }
+
+    /* 移动端收纳开关，样式对齐 back-to-top 按钮 */
+    #sakana-toggle {
+        display: none;
+        z-index: 1;
+        cursor: pointer;
+        position: fixed;
+        left: 1rem;
+        bottom: 1rem;
+        width: 2.7rem;
+        height: 2.7rem;
+        padding: 0;
+        border-radius: 50%;
+        border: 1px solid var(--btn-backtotop-border-color);
+        background: var(--button-bg);
+        color: var(--btn-backtotop-color);
+        align-items: center;
+        justify-content: center;
+    }
+
+    @media all and (max-width: 849px) {
+        /* 默认收起：组件淡出隐藏，由 #sakana-toggle 控制展开 */
+        html .sakana-box {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+        }
+
+        html.sakana-expanded .sakana-box {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.3s ease;
+        }
+
+        #sakana-toggle {
+            display: flex;
+        }
+    }
 </style>
 <div class="sakana-box" style="display: flex;z-index: 10;  bottom: 0; right: 0px;"></div>
+<button id="sakana-toggle" type="button" aria-label="显示或隐藏 Sakana 小组件" aria-expanded="false">
+    <i class="fas fa-fish"></i>
+</button>
 <script src="{{ '/assets/js/sakana/sakana.js' | relative_url }}"></script>
 <script src="{{ '/assets/js/sakana/sakana_init.js' | relative_url }}"></script>

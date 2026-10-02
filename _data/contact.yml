@@ -9,6 +9,7 @@
 
 -
   type: steam
+  url: 'https://steamcommunity.com/id/thuchenyusi'
   icon: 'fab fa-steam'
   noblank: true
 

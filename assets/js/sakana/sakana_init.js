@@ -5,6 +5,9 @@
  * 展开时点击组件外部区域自动收起，并用 localStorage 记住用户选择
  */
 (function () {
+    var template = document.getElementById('sakana-template');
+    document.body.appendChild(template.content.cloneNode(true));
+    template.remove();
     var MOBILE_QUERY = '(max-width: 849px)';
     var STORAGE_KEY = 'sakana:expanded';
     var EXPANDED_CLASS = 'sakana-expanded';

@@ -19,3 +19,30 @@ My Personal blog | Made With Jekyll
 ## License
 
 Except where otherwise noted, the files in project are licensed under MIT.
+## Theme maintenance
+
+The site uses the Chirpy 7.6 gem (locked to 7.6.0), including its layouts, scripts,
+styles and translations. Keep theme files in the gem instead of copying them
+into this repository: local copies override updates from the gem.
+
+Site overrides are limited to the metadata hook, the existing favicons,
+custom CSS, the Sakana/sakura widgets and additional locale tab labels.
+The assets/lib submodule matches Chirpy v7.6.0
+(5cde3f0076b62e45fc68291893cf7d93e122adb7).
+The small /sw.js bridge upgrades visitors with a Chirpy 5 service worker.
+
+Use Ruby 3.4, initialize submodules, and run:
+
+~~~sh
+git submodule update --init
+bundle install
+JEKYLL_ENV=production bundle exec jekyll build
+bundle exec ruby tools/check_site.rb
+~~~
+
+For future theme updates, update Gemfile and Gemfile.lock, compare the upstream
+_config.yml and static-assets revision, then repeat these checks. Pull requests
+build and check the site; only the default branch deploys to GitHub Pages.
+
+Known pre-existing content issue: the C and C++ tags both resolve to /tags/c/,
+so Jekyll reports a duplicate archive destination.

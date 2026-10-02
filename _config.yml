@@ -224,8 +224,12 @@ exclude:
   - "*.config.js"
   - "package*.json"
 
+# Keep archive generation and every archive link on the same slugging mode.
+archive_slug_mode: &archive_slug_mode pretty
+
 jekyll-archives:
   enabled: [categories, tags]
+  slug_mode: *archive_slug_mode
   layouts:
     category: category
     tag: tag

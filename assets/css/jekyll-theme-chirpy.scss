@@ -1,0 +1,26 @@
+---
+---
+
+@use 'abstracts/variables' with (
+  $theme: '{{ site.theme_mode }}'
+);
+
+/* prettier-ignore */
+@use 'main
+{%- if jekyll.environment == 'production' -%}
+  .bundle
+{%- endif -%}
+';
+
+/* append your custom style below */
+
+#sidebar {
+  background-size: 100%;
+  background-position: bottom;
+  background-repeat: no-repeat;
+  background-image: url(https://image.yurich.me/anime/sidebar/%E6%98%8E%E7%9F%B3%E3%81%95%E3%82%93_%E3%81%97%E3%81%A1.png);
+}
+
+code.highlighter-rouge {
+  word-break: break-word;
+}

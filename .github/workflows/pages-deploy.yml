@@ -32,6 +32,14 @@ jobs:
         run: bundle exec jekyll build
         env:
           JEKYLL_ENV: production
+      - name: Build Markdown export
+        # Download images during the build, avoiding browser CORS restrictions.
+        # A failed export prevents replacing the last complete deployment.
+        run: python tools/export_blog.py
+      - name: Test Markdown export
+        run: |
+          python -B -m unittest discover -s tools/tests -p "test_*.py"
+          bundle exec ruby tools/test_blog_export_input.rb
       - name: Check generated pages and local assets
         run: bundle exec ruby tools/check_site.rb
       - name: Upload site artifact

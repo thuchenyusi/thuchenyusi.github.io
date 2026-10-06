@@ -37,12 +37,21 @@ Use Ruby 3.4, initialize submodules, and run:
 git submodule update --init
 bundle install
 JEKYLL_ENV=production bundle exec jekyll build
+python tools/export_blog.py
+python -B -m unittest discover -s tools/tests -p 'test_*.py'
+bundle exec ruby tools/test_blog_export_input.rb
 bundle exec ruby tools/check_site.rb
 ~~~
 
 For future theme updates, update Gemfile and Gemfile.lock, compare the upstream
 _config.yml and static-assets revision, then repeat these checks. Pull requests
 build and check the site; only the default branch deploys to GitHub Pages.
+
+The footer's **导出全站** link downloads published Markdown posts and their
+images as a ZIP with local relative image paths. The deployment builds this
+archive automatically. See [docs/blog-export.md](docs/blog-export.md) for the
+archive layout, image conventions and local export commands. Python 3.10+ is
+required to generate the archive; reading it only needs a Markdown reader.
 
 Known pre-existing content issue: the C and C++ tags both resolve to /tags/c/,
 so Jekyll reports a duplicate archive destination.

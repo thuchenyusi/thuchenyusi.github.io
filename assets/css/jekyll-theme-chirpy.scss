@@ -18,9 +18,32 @@
   background-size: 100%;
   background-position: bottom;
   background-repeat: no-repeat;
-  background-image: url(https://image.yurich.me/anime/sidebar/%E6%98%8E%E7%9F%B3%E3%81%95%E3%82%93_%E3%81%97%E3%81%A1.png);
+  background-image: url("{{ site.sidebar_background }}");
 }
 
 code.highlighter-rouge {
   word-break: break-word;
+}
+
+footer .blog-export-row {
+  display: block;
+  margin-top: 0.35rem;
+
+  a {
+    display: inline-block;
+    padding-block: 0.125rem;
+    color: inherit;
+    border-bottom: 0;
+
+    &:hover {
+      color: var(--link-color);
+      text-decoration: underline;
+    }
+  }
+}
+
+@media (min-width: 992px) {
+  footer .blog-export-credits {
+    text-align: right;
+  }
 }

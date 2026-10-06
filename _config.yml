@@ -98,6 +98,12 @@ cdn: ""
 # the avatar on sidebar, support local or CORS resources
 avatar: "https://image.yurich.me/anime/avatar/mayuri.jpg"
 
+# Keep shared image URLs here so the site and Markdown export use one source.
+sidebar_background: "https://image.yurich.me/anime/sidebar/%E6%98%8E%E7%9F%B3%E3%81%95%E3%82%93_%E3%81%97%E3%81%A1.png"
+blog_export:
+  enabled: true
+  extra_images: [] # Optional additional image URLs to include in the archive.
+
 # The URL of the site-wide social preview image used in SEO `og:image` meta tag.
 # It can be overridden by a customized `page.image` in front matter.
 social_preview_image: # string, local or CORS resources
@@ -218,6 +224,7 @@ exclude:
   - "*.gemspec"
   - docs
   - tools
+  - AGENTS.md
   - README.md
   - LICENSE
   - purgecss.js

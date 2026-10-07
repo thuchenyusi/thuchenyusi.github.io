@@ -25,12 +25,23 @@ code.highlighter-rouge {
   word-break: break-word;
 }
 
+{% if site.blog_export.enabled %}
+/* Reserve the download row before its deferred script runs. */
+footer[aria-label='Site Info'] > p:last-child {
+  position: relative;
+  padding-bottom: calc(1lh + 0.6rem);
+}
+
 footer .blog-export-row {
   display: block;
-  margin-top: 0.35rem;
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  white-space: nowrap;
 
   a {
     display: inline-block;
+    vertical-align: top;
     padding-block: 0.125rem;
     color: inherit;
     border-bottom: 0;
@@ -43,10 +54,11 @@ footer .blog-export-row {
 }
 
 @media (min-width: 992px) {
-  footer .blog-export-credits {
+  footer[aria-label='Site Info'] > p:last-child {
     text-align: right;
   }
 }
+{% endif %}
 
 /* 鉴赏栏目：封面墙、卡片与展开详情 */
 

@@ -28,6 +28,22 @@ For future theme updates, update Gemfile and Gemfile.lock, compare the upstream
 _config.yml and static-assets revision, then repeat these checks. Pull requests
 build and check the site; only the default branch deploys to GitHub Pages.
 
+## Archive slugs
+
+Tag and category archive links use the same `pretty` slug mode as
+`jekyll-archives`. `_plugins/archive-slug-collision-check.rb` keeps the theme's
+Liquid links aligned with the generated archive paths and fails the build when
+two archive names produce the same slug. For example, `C` and `C++` generate
+`/tags/c/` and `/tags/c++/`, while `C#` still collides with `C` in `pretty`
+mode.
+
+Before using a `C#` tag in a post, add an explicit `C#` to `csharp` slug mapping
+and apply it to both Liquid link generation and `jekyll-archives` page
+generation. The repository does not currently provide a mapping configuration,
+so implement and test that support before publishing the tag. Do not disable
+the collision check or change the visible tag name merely to make the build
+pass.
+
 ## Sakana version maintenance
 
 The metadata hook loads `html/sakana.min.js` from the `thuchenyusi/sakana`

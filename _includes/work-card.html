@@ -1,0 +1,75 @@
+{% comment %}
+作品卡片：封面、作品名、作者或主创、个人评分，以及已配置的平台链接。
+用法：
+  {% include work-card.html id="little-prince" %}      ← 文章内引用，id 须先声明在 front matter 的 works
+  {% include work-card.html work=work mode="wall" %}   ← 鉴赏页封面墙，点击展开详情
+
+说明：封面沿用主题的弹窗图片处理（refactor-content 会把 img 包进 a.popup）。
+封面墙的点击在捕获阶段拦截（reviews.js），不会触发弹窗；文章内卡片为避免
+嵌套锚点，封面保持主题默认的图片行为，标题链接到作品独立页面。
+{% endcomment %}
+{% assign work = include.work %}
+{% if work == nil %}
+  {% assign work = site.works | where_exp: "candidate", "candidate.work_id == include.id" | first %}
+{% endif %}
+{% assign creator = work.author | default: work.director | default: work.developer %}
+{% capture cover %}
+  <span class="work-cover">
+    {% if work.image %}
+    <img class="work-card-cover" src="{{ work.image }}" alt="{{ work.title }}">
+    {% else %}
+    <span class="work-cover-fallback" aria-hidden="true">{{ work.title | slice: 0 }}</span>
+    {% endif %}
+  </span>
+{% endcapture %}
+{% assign type_label = site.data.work_status.type[work.type] %}
+{% assign status_label = site.data.work_status.status[work.status][work.type] %}
+{% capture info %}
+  <span class="work-info">
+    {% if include.mode == "wall" %}
+    <span class="work-title">{{ work.title }}</span>
+    {% else %}
+    <a class="work-title" href="{{ work.url | relative_url }}">{{ work.title }}</a>
+    {% if type_label or status_label %}
+    <span class="work-meta">{{ type_label }}{% if type_label and status_label %} · {% endif %}{{ status_label }}</span>
+    {% endif %}
+    {% endif %}
+    {% if creator %}<span class="work-creator">{{ creator }}</span>{% endif %}
+    {% if work.rating != nil %}<span class="work-rating">{{ work.rating | round: 1 }} / 10</span>{% endif %}
+    {% if include.mode != "wall" and work.links %}
+    <span class="work-card-links">
+      {% if work.links.douban %}
+      <a href="{{ work.links.douban }}" target="_blank" rel="noopener noreferrer"
+         aria-label="{{ work.title }}的豆瓣条目"><span class="work-platform-link">豆</span><span class="work-platform-name">豆瓣</span></a>
+      {% endif %}
+      {% if work.links.bangumi %}
+      <a href="{{ work.links.bangumi }}" target="_blank" rel="noopener noreferrer"
+         aria-label="{{ work.title }}的Bangumi条目"><span class="work-platform-link">番</span><span class="work-platform-name">Bangumi</span></a>
+      {% endif %}
+    </span>
+    {% endif %}
+  </span>
+{% endcapture %}
+<div class="work-card" data-work-id="{{ work.work_id }}" data-work-type="{{ work.type }}">
+  {% if include.mode == "wall" %}
+  <div class="work-card-main" role="button" tabindex="0" aria-expanded="false" aria-label="展开 {{ work.title }} 的详情">
+    {{ cover }}
+    {{ info }}
+  </div>
+  {% else %}
+  {{ cover }}
+  {{ info }}
+  {% endif %}
+  {% if include.mode == "wall" and work.links %}
+  <span class="work-card-links">
+    {% if work.links.douban %}
+    <a href="{{ work.links.douban }}" target="_blank" rel="noopener noreferrer" title="豆瓣"
+       aria-label="{{ work.title }}的豆瓣条目" class="work-platform-link">豆</a>
+    {% endif %}
+    {% if work.links.bangumi %}
+    <a href="{{ work.links.bangumi }}" target="_blank" rel="noopener noreferrer" title="Bangumi"
+       aria-label="{{ work.title }}的Bangumi条目" class="work-platform-link">番</a>
+    {% endif %}
+  </span>
+  {% endif %}
+</div>

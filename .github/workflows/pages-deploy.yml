@@ -40,6 +40,7 @@ jobs:
         run: |
           python -B -m unittest discover -s tools/tests -p "test_*.py"
           bundle exec ruby tools/test_blog_export_input.rb
+          bundle exec ruby tools/test_works_validation.rb
       - name: Check generated pages and local assets
         run: bundle exec ruby tools/check_site.rb
       - name: Upload site artifact

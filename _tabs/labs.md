@@ -1,7 +1,7 @@
 ---
 title: labs
 icon: fas fa-flask
-order: 5
+order: 6
 ---
 
 ## C/C++

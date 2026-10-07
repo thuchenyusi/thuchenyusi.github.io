@@ -35,7 +35,7 @@ class BlogExportTests(unittest.TestCase):
             path.parent.mkdir(exist_ok=True)
             path.write_bytes(PNG)
         self.config = {
-            "schema_version": 1,
+            "schema_version": 3,
             "title": "测试博客",
             "generated_at": "2026-10-06T19:00:00+08:00",
             "site_url": "https://blog.example.com",
@@ -43,7 +43,8 @@ class BlogExportTests(unittest.TestCase):
             "cdn": "",
             "site_images": [{"role": "avatar", "url": "/assets/avatar.png"},
                             {"role": "sidebar_background", "url": "/assets/background.png"}],
-            "posts": []
+            "posts": [],
+            "works": []
         }
         self.output = self.root / "blog.zip"
 
@@ -51,8 +52,14 @@ class BlogExportTests(unittest.TestCase):
         return {"source": "_posts/" + filename, "filename": filename,
                 "title": "书籍", "url": "/posts/book/", "markdown": markdown, **extra}
 
-    def export(self, posts):
+    def work(self, markdown, filename="little-prince.md", work_id="little-prince", **extra):
+        return {"id": work_id, "source": "_works/" + filename, "filename": filename,
+                "title": "小王子", "url": "/reviews/little-prince/", "markdown": markdown, **extra}
+
+    def export(self, posts, works=None):
         self.config["posts"] = posts
+        if works is not None:
+            self.config["works"] = works
         counts = Exporter(self.config, self.site).write(self.output)
         with zipfile.ZipFile(self.output) as archive:
             self.assertIsNone(archive.testzip())
@@ -63,7 +70,7 @@ class BlogExportTests(unittest.TestCase):
         posts = [self.post("![封面](/assets/cover.png)\n"),
                  self.post("![同一封面](/assets/cover.png)\n", "2026-10-07-second.md")]
         counts, contents, manifest = self.export(posts)
-        self.assertEqual(counts, (2, 3))
+        self.assertEqual(counts, (2, 0, 3))
         with zipfile.ZipFile(self.output) as archive:
             archive.extractall(self.root / "extracted")
         for post in posts:
@@ -108,7 +115,7 @@ class BlogExportTests(unittest.TestCase):
 
     def test_manifest_keeps_only_distinct_source_references(self):
         _, _, manifest = self.export([self.post("![相对地址](/assets/cover.png)")])
-        self.assertEqual(manifest["schema_version"], 3)
+        self.assertEqual(manifest["schema_version"], 4)
         avatar = next(image for image in manifest["images"] if image["url"].endswith("avatar.png"))
         # Site config may use a relative spelling, so preserve it once.
         self.assertEqual(avatar["uses"], [{"role": "avatar", "reference": "/assets/avatar.png"}])
@@ -161,7 +168,7 @@ class BlogExportTests(unittest.TestCase):
     def test_inline_nested_parentheses_and_angle_destinations(self):
         markdown = '![嵌套 [说明]](/assets/photo(1).png "标题")\n![中文](</assets/中文.png>)'
         counts, contents, _ = self.export([self.post(markdown)])
-        self.assertEqual(counts[1], 4)
+        self.assertEqual(counts[2], 4)
         exported = contents["posts/2026-10-06-book.md"].decode()
         self.assertIn(' "标题")', exported)
         self.assertIn("](<../images/", exported)
@@ -250,7 +257,7 @@ class BlogExportTests(unittest.TestCase):
     def test_baseurl_local_images_and_cdn_media_subpath(self):
         self.config["baseurl"] = "/blog"
         counts, _, _ = self.export([self.post("![封面](assets/cover.png)")])
-        self.assertEqual(counts, (1, 3))
+        self.assertEqual(counts, (1, 0, 3))
         config = copy.deepcopy(self.config)
         config["cdn"] = "https://image.example.com"
         self.assertEqual(canonical_url("cover.png", config, "books/book"),
@@ -305,6 +312,116 @@ class BlogExportTests(unittest.TestCase):
         with self.assertRaisesRegex(ExportError, "no exportable Markdown reference"):
             self.export([self.post('{% include cover.html %}',
                                    rendered_images=["/assets/cover.png"])])
+
+    def test_works_are_exported_to_reviews_with_rewritten_images(self):
+        markdown = ("---\nid: little-prince\nimage: \"/assets/cover.png\"\n---\n"
+                    "短评。\n\n![插图](/assets/中文.png)\n")
+        counts, contents, manifest = self.export(
+            [self.post("正文\n")], [self.work(markdown, front_image="/assets/cover.png")])
+        self.assertEqual(counts, (1, 1, 4))
+        exported = contents["reviews/little-prince.md"].decode()
+        self.assertIn("../images/blog.example.com/assets/cover.png", exported)
+        self.assertIn("id: little-prince", exported)
+        for start, end in image_spans(exported):
+            path = unquote(exported[start:end]).removeprefix("../")
+            self.assertEqual(contents[path], PNG)
+        self.assertEqual(manifest["works"], [{
+            "id": "little-prince", "source": "_works/little-prince.md",
+            "filename": "little-prince.md", "title": "小王子", "url": "/reviews/little-prince/"
+        }])
+        readme = contents["README.md"].decode()
+        self.assertIn("## 作品", readme)
+        self.assertIn("(reviews/little-prince.md)", readme)
+
+    def test_cover_shared_by_post_and_work_is_deduplicated(self):
+        work = self.work("---\nid: little-prince\nimage: \"/assets/cover.png\"\n---\n短评。\n",
+                         front_image="/assets/cover.png")
+        counts, _, manifest = self.export([self.post("![同一封面](/assets/cover.png)\n")], [work])
+        self.assertEqual(counts, (1, 1, 3))
+        cover = next(image for image in manifest["images"] if image["url"].endswith("cover.png"))
+        self.assertEqual({use["markdown"] for use in cover["uses"]},
+                         {"posts/2026-10-06-book.md", "reviews/little-prince.md"})
+
+    def test_post_works_yaml_is_preserved_without_expansion(self):
+        front = "---\ntitle: 书籍\nworks:\n  - little-prince\n---\n"
+        _, contents, _ = self.export([self.post(front + "正文\n")], [self.work("短评\n")])
+        self.assertTrue(contents["posts/2026-10-06-book.md"].decode().startswith(front))
+
+    def test_work_cards_expand_in_place_and_resolve_after_extraction(self):
+        front = "---\ntitle: Reading\nworks: [little-prince]\n---\n"
+        tag = '{% include work-card.html id="little-prince" %}'
+        post = self.post(front + "Before\n\n" + tag + "\n\nAfter\n", rendered_images=["/assets/cover.png"])
+        work = self.work("---\nimage: /assets/cover.png\n---\nReview\n",
+                         front_image="/assets/cover.png", creator="Author", rating=8.5,
+                         rendered_images=["/assets/cover.png"])
+        counts, contents, manifest = self.export([post], [work])
+        text = contents["posts/2026-10-06-book.md"].decode()
+        self.assertTrue(text.startswith(front))
+        self.assertNotIn(tag, text)
+        self.assertLess(text.index("Before"), text.index("我的评分：8.5 / 10"))
+        self.assertLess(text.index("我的评分：8.5 / 10"), text.index("After"))
+        self.assertIn("Author", text)
+        self.assertIn("[小王子](../reviews/little-prince.md)", text)
+        self.assertEqual(counts, (1, 1, 3))
+        cover = next(image for image in manifest["images"] if image["url"].endswith("cover.png"))
+        self.assertEqual({use["markdown"] for use in cover["uses"]},
+                         {"posts/2026-10-06-book.md", "reviews/little-prince.md"})
+        self.assertEqual(next(use["line"] for use in cover["uses"] if use["source"] == post["source"]), 7)
+        with zipfile.ZipFile(self.output) as archive:
+            archive.extractall(self.root / "expanded")
+        exported = self.root / "expanded/posts" / post["filename"]
+        for start, end in image_spans(text):
+            self.assertEqual((exported.parent / unquote(text[start:end])).read_bytes(), PNG)
+        self.assertTrue((exported.parent / "../reviews/little-prince.md").is_file())
+
+    def test_work_card_code_comments_and_raw_examples_are_not_expanded(self):
+        tag = '{% include work-card.html id="ghost" %}'
+        examples = [f'`{tag}`', f'```liquid\n{tag}\n```', f'    {tag}\n',
+                    f'<!-- {tag} -->', f'{{% raw %}}{tag}{{% endraw %}}',
+                    f'{{%- comment -%}}{tag}{{%- endcomment -%}}']
+        source = "\n\n".join(examples)
+        _, contents, _ = self.export([self.post(source)])
+        self.assertEqual(contents["posts/2026-10-06-book.md"].decode(), source)
+
+    def test_work_card_whitespace_control_metadata_escaping_and_no_rating(self):
+        tag = "{%- include work-card.html id = 'little-prince' -%}"
+        work = self.work("Review", title="A [title] & <b>", rating=None)
+        _, contents, _ = self.export([self.post(tag)], [work])
+        text = contents["posts/2026-10-06-book.md"].decode()
+        self.assertIn(r"A \[title\] &amp; &lt;b&gt;", text)
+        self.assertNotIn("我的评分", text)
+        self.assertNotIn("include", text)
+
+    def test_work_card_zero_score_and_multiple_references(self):
+        tags = '{% include work-card.html id="little-prince" %}\n{% include work-card.html id="second" %}'
+        _, contents, _ = self.export([self.post(tags)], [
+            self.work("Review", rating=0), self.work("Review", filename="second.md", work_id="second", rating=10)
+        ])
+        text = contents["posts/2026-10-06-book.md"].decode()
+        self.assertIn("我的评分：0.0 / 10", text)
+        self.assertIn("我的评分：10.0 / 10", text)
+        self.assertIn("../reviews/second.md", text)
+
+    def test_missing_and_dynamic_work_cards_fail_without_replacing_archive(self):
+        self.export([self.post("Original")])
+        previous = self.output.read_bytes()
+        for tag, error in [('{% include work-card.html id="ghost" %}', "missing or unpublished"),
+                           ('{% include work-card.html id=page.work %}', "literal-id")]:
+            with self.subTest(tag=tag), self.assertRaisesRegex(ExportError, error):
+                self.export([self.post(tag)])
+            self.assertEqual(self.output.read_bytes(), previous)
+
+    def test_work_include_images_cannot_be_silently_omitted(self):
+        self.export([self.post("Original")])
+        previous = self.output.read_bytes()
+        work = self.work("{% include illustration.html %}", rendered_images=["/assets/cover.png"])
+        with self.assertRaisesRegex(ExportError, "_works/little-prince.md.*no exportable Markdown reference"):
+            self.export([], [work])
+        self.assertEqual(self.output.read_bytes(), previous)
+
+    def test_invalid_work_filename_is_rejected(self):
+        with self.assertRaisesRegex(ExportError, "Invalid exported filename"):
+            self.export([], [self.work("短评\n", filename="../evil.md")])
 
 
 if __name__ == "__main__":

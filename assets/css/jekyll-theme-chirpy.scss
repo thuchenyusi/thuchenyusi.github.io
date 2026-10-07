@@ -47,3 +47,483 @@ footer .blog-export-row {
     text-align: right;
   }
 }
+
+/* 鉴赏栏目：封面墙、卡片与展开详情 */
+
+.reviews-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+
+  button {
+    border: 1px solid var(--btn-border-color, var(--bs-border-color));
+    border-radius: 2rem;
+    background: transparent;
+    color: var(--text-muted-color);
+    padding: 0.3rem 1rem;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: var(--link-color);
+      border-color: var(--link-color);
+    }
+
+    &.active {
+      background: var(--link-color);
+      border-color: var(--link-color);
+      color: #fff;
+    }
+  }
+}
+
+.reviews-wall {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1.25rem;
+}
+
+@media (max-width: 575.98px) {
+  .reviews-wall {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.875rem;
+  }
+}
+
+.work-card {
+  position: relative;
+  border-radius: 0.5rem;
+  background: var(--card-bg);
+  border: 1px solid var(--main-border-color);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), 0 6px 18px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &[hidden] {
+    display: none;
+  }
+
+  .work-card-main {
+    display: block;
+    height: 100%;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .reviews-wall &:hover {
+    transform: translateY(-4px);
+    border-color: var(--link-color);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08), 0 14px 30px rgba(0, 0, 0, 0.13);
+  }
+
+  &.expanded {
+    border-color: var(--link-color);
+  }
+
+  .work-cover {
+    display: block;
+    aspect-ratio: 3 / 4;
+    background: var(--img-bg);
+
+    a {
+      display: block;
+      height: 100%;
+      margin: 0; /* 覆盖主题 .content a.popup 的上下边距，避免封面顶部出现空白带 */
+      border-bottom: 0;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .work-cover-fallback {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      font-size: 2.5rem;
+      color: var(--text-muted-color);
+    }
+  }
+
+  .work-info {
+    display: block;
+    padding: 0.6rem 0.75rem 0.75rem;
+
+    .work-title {
+      display: block;
+      font-weight: 600;
+      line-height: 1.35;
+      overflow-wrap: break-word;
+      color: var(--heading-color);
+      text-decoration: none;
+      border-bottom: 0;
+
+      &:hover {
+        color: var(--link-color);
+      }
+    }
+
+    .work-creator {
+      display: block;
+      margin-top: 0.2rem;
+      font-size: 0.82rem;
+      color: var(--text-muted-color);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .work-rating {
+      display: block;
+      margin-top: 0.35rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--link-color);
+    }
+  }
+
+  .work-card-links {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    display: flex;
+    gap: 0.35rem;
+
+    a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.6rem;
+      height: 1.6rem;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.55);
+      color: #fff;
+      font-size: 0.85rem;
+      text-decoration: none;
+
+      &:hover {
+        background: var(--link-color);
+        color: #fff;
+      }
+    }
+
+    .work-platform-link {
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+  }
+}
+
+.work-detail-row {
+  grid-column: 1 / -1;
+}
+
+.work-detail {
+  position: relative;
+  border: 1px solid var(--main-border-color);
+  border-radius: 0.5rem;
+  background: var(--card-bg);
+  padding: 1.5rem;
+
+  .work-detail-close {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 1.9rem;
+    height: 1.9rem;
+    border-radius: 50%;
+    border: 1px solid var(--btn-border-color, var(--bs-border-color));
+    background: transparent;
+    color: var(--text-muted-color);
+    font-size: 1.05rem;
+    line-height: 1;
+    padding: 0;
+
+    &:hover {
+      color: var(--link-color);
+      border-color: var(--link-color);
+    }
+  }
+
+  .work-detail-head {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+  }
+
+  .work-detail-cover {
+    flex: 0 0 120px;
+
+    img {
+      width: 120px;
+      border-radius: 0.35rem;
+      box-shadow: var(--card-shadow);
+      display: block;
+    }
+  }
+
+  /* 封面墙展开面板：更大的海报，配合精简后的元数据保持两列平衡 */
+  &.work-detail-compact {
+    .work-detail-head {
+      align-items: center;
+    }
+
+    .work-detail-cover {
+      flex-basis: 170px;
+
+      img {
+        width: 170px;
+      }
+    }
+
+    .work-detail-title {
+      margin-right: 2.5rem;
+    }
+  }
+
+  .work-detail-title {
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+  }
+
+  .work-detail-fields {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 0.25rem 1.5rem;
+    margin: 0 0 0.75rem;
+    font-size: 0.92rem;
+
+    > div {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    dt {
+      flex: 0 0 auto;
+      color: var(--text-muted-color);
+      font-weight: normal;
+
+      &::after {
+        content: '·';
+        margin-left: 0.5rem;
+      }
+    }
+
+    dd {
+      margin: 0;
+    }
+  }
+
+  .work-detail-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 0;
+    font-size: 0.92rem;
+
+    a {
+      color: var(--link-color);
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    .work-platform-link {
+      display: inline-block;
+      width: 1.15rem;
+      height: 1.15rem;
+      line-height: 1.15rem;
+      text-align: center;
+      border-radius: 50%;
+      background: var(--link-color);
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+  }
+
+  .work-detail-body {
+    margin-top: 1.25rem;
+
+    > :first-child {
+      margin-top: 0;
+    }
+
+    > :last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+@media (max-width: 575.98px) {
+  .work-detail {
+    padding: 1rem;
+
+    .work-detail-head {
+      gap: 1rem;
+    }
+
+    .work-detail-cover,
+    &.work-detail-compact .work-detail-cover {
+      flex-basis: 96px;
+
+      img {
+        width: 96px;
+      }
+    }
+
+    .work-detail-fields {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+/* 文章内引用的作品卡片（鉴赏页封面墙的卡片在 .reviews-wall 内，不受影响）。
+   桌面版为横向气泡：海报在左、元数据在右，外链以文字链接形式排在信息列底部；
+   窄屏回退为竖向卡片，外链回到右上角圆形徽章。 */
+.content > .work-card {
+  display: flex;
+  align-items: stretch;
+  max-width: 30rem;
+  margin: 1.5rem 0;
+  border-radius: 0.85rem;
+
+  .work-cover {
+    flex: 0 0 148px;
+    aspect-ratio: auto;
+  }
+
+  .work-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1.1rem 1.25rem;
+    min-height: 196px;
+
+    .work-title {
+      font-size: 1.15rem;
+    }
+
+    .work-meta {
+      display: block;
+      margin-top: 0.3rem;
+      font-size: 0.85rem;
+      color: var(--text-muted-color);
+    }
+
+    .work-creator {
+      margin-top: 0.4rem;
+      font-size: 0.95rem;
+      white-space: normal;
+    }
+
+    .work-rating {
+      margin-top: 0.5rem;
+      font-size: 1rem;
+    }
+
+    /* 桌面版：外链为信息列底部的文字链接（圆形小徽章 + 平台名） */
+    .work-card-links {
+      position: static;
+      margin-top: 0.9rem;
+      gap: 1rem;
+
+      a {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        width: auto;
+        height: auto;
+        padding: 0;
+        border-radius: 0;
+        background: none;
+        color: var(--link-color);
+        font-size: 0.88rem;
+
+        &:hover {
+          background: none;
+          color: var(--link-color);
+          text-decoration: underline;
+        }
+
+        .work-platform-link {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 1.15rem;
+          height: 1.15rem;
+          border-radius: 50%;
+          background: var(--link-color);
+          color: #fff;
+          font-size: 0.72rem;
+          font-weight: 700;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 575.98px) {
+  .content > .work-card {
+    display: block;
+    max-width: 220px;
+
+    .work-cover {
+      aspect-ratio: 3 / 4;
+    }
+
+    .work-info {
+      display: block;
+      min-height: 0;
+      padding: 0.6rem 0.75rem 0.75rem;
+
+      .work-title {
+        font-size: 1rem;
+      }
+
+      .work-meta {
+        margin-top: 0.2rem;
+        font-size: 0.78rem;
+      }
+
+      /* 窄屏：外链回到右上角圆形徽章，隐藏平台名 */
+      .work-card-links {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        margin-top: 0;
+        gap: 0.35rem;
+
+        a {
+          width: 1.6rem;
+          height: 1.6rem;
+          border-radius: 50%;
+          background: rgba(0, 0, 0, 0.55);
+          color: #fff;
+          font-size: 0; /* 隐藏平台名文本节点，仅保留徽章 */
+
+          &:hover {
+            background: var(--link-color);
+            color: #fff;
+            text-decoration: none;
+          }
+
+          .work-platform-link {
+            width: auto;
+            height: auto;
+            background: none;
+            font-size: 0.78rem;
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,79 @@
+{% comment %}
+作品详情：元数据、个人评论正文与平台链接。
+body 为已渲染的评论 HTML；heading 指定标题标签（独立页用 h1，展开面板用 h2）；
+collapse=true 时为封面墙展开面板：紧凑元数据（只保留类型/状态/评分/主创/年份/
+评论日期）、更大的海报、右上角收起按钮，完整元数据只在独立页展示。
+{% endcomment %}
+{% assign work = include.work %}
+{% assign heading = include.heading | default: "h2" %}
+{% assign status_label = site.data.work_status.status[work.status][work.type] %}
+{% if work.author %}
+  {% assign creator = work.author %}
+  {% assign creator_label = "作者" %}
+{% elsif work.director %}
+  {% assign creator = work.director %}
+  {% assign creator_label = "导演" %}
+{% elsif work.developer %}
+  {% assign creator = work.developer %}
+  {% assign creator_label = "开发商" %}
+{% endif %}
+<div class="work-detail{% if include.collapse %} work-detail-compact{% endif %}" data-work-id="{{ work.work_id }}">
+  {% if include.collapse %}
+  <button type="button" class="work-detail-close" aria-label="收起详情" title="收起">×</button>
+  {% endif %}
+  <div class="work-detail-head">
+    {% if work.image %}
+    <span class="work-detail-cover">
+      <img src="{{ work.image }}" alt="{{ work.title }}">
+    </span>
+    {% endif %}
+    <div class="work-detail-meta">
+      <{{ heading }} class="work-detail-title">{{ work.title }}</{{ heading }}>
+      <dl class="work-detail-fields">
+        <div><dt>类型</dt><dd>{{ site.data.work_status.type[work.type] }}</dd></div>
+        {% if status_label %}<div><dt>状态</dt><dd>{{ status_label }}</dd></div>{% endif %}
+        {% if work.rating != nil %}<div><dt>评分</dt><dd>{{ work.rating | round: 1 }} / 10</dd></div>{% endif %}
+        {% if include.collapse %}
+          {% if creator %}<div><dt>{{ creator_label }}</dt><dd>{{ creator }}</dd></div>{% endif %}
+          {% if work.year %}<div><dt>年份</dt><dd>{{ work.year }}</dd></div>{% endif %}
+          {% if work.reviewed_at %}<div><dt>评论日期</dt><dd>{{ work.reviewed_at }}</dd></div>{% endif %}
+        {% else %}
+          {% if work.author %}<div><dt>作者</dt><dd>{{ work.author }}</dd></div>{% endif %}
+          {% if work.translator %}<div><dt>译者</dt><dd>{{ work.translator }}</dd></div>{% endif %}
+          {% if work.director %}<div><dt>导演</dt><dd>{{ work.director }}</dd></div>{% endif %}
+          {% if work.developer %}<div><dt>开发商</dt><dd>{{ work.developer }}</dd></div>{% endif %}
+          {% if work.publisher %}<div><dt>出版社</dt><dd>{{ work.publisher }}</dd></div>{% endif %}
+          {% if work.isbn %}<div><dt>ISBN</dt><dd>{{ work.isbn }}</dd></div>{% endif %}
+          {% if work.year %}<div><dt>年份</dt><dd>{{ work.year }}</dd></div>{% endif %}
+          {% if work.reviewed_at %}<div><dt>评论日期</dt><dd>{{ work.reviewed_at }}</dd></div>{% endif %}
+          {% if work.tags %}<div><dt>标签</dt><dd>{{ work.tags | join: "、" }}</dd></div>{% endif %}
+        {% endif %}
+      </dl>
+      <p class="work-detail-links">
+        {% if work.links.douban %}
+        <a href="{{ work.links.douban }}" target="_blank" rel="noopener noreferrer">
+          <span class="work-platform-link">豆</span> 豆瓣
+        </a>
+        {% endif %}
+        {% if work.links.bangumi %}
+        <a href="{{ work.links.bangumi }}" target="_blank" rel="noopener noreferrer">
+          <span class="work-platform-link">番</span> Bangumi
+        </a>
+        {% endif %}
+        {% if work.review_post %}
+        <a href="{{ work.review_post | relative_url }}">
+          <i class="fa-regular fa-file-lines"></i> 长评全文
+        </a>
+        {% endif %}
+        {% if include.collapse %}
+        <a href="{{ work.url | relative_url }}">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i> 独立页面
+        </a>
+        {% endif %}
+      </p>
+    </div>
+  </div>
+  <div class="work-detail-body">
+    {{ include.body }}
+  </div>
+</div>

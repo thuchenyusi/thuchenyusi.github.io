@@ -2,9 +2,10 @@
 
 ## 范围与入口
 
-正文底部页脚中，主题说明下方的「导出全站」文字链接下载一个 ZIP，包含所有已发布文章的 Markdown、文章
-引用的图片、头像、侧栏背景和显式配置的附加图片。它保存的是部署时的
-快照，不是点击时重新抓取 S3。不会导出草稿、未来文章、未引用的原图、
+正文底部页脚中，主题说明下方的「导出全站」文字链接下载一个 ZIP，包含所有已发布文章的 Markdown、公开
+作品记录（`_works`）的 Markdown、文章与作品引用的图片、头像、侧栏背景和显式配置的附加图片。它保存
+的是部署时的
+快照，不是点击时重新抓取 S3。不会导出草稿、未来文章、未公开作品（`published: false`）、未引用的原图、
 HTML、JS 或字体。普通豆瓣等外部链接保持原样。桌面端链接与主题说明右对齐，
 移动端跟随页脚居中显示，不占用侧栏导航。链接说明标明 Markdown 和图片范围。
 
@@ -37,6 +38,8 @@ blog-markdown-YYYY-MM-DD.zip
 ├─ manifest.json
 ├─ posts/
 │  └─ 2022-09-07-detective-fiction-list.md
+├─ reviews/
+│  └─ little-prince.md
 └─ images/
    └─ image.yurich.me/
       ├─ anime/
@@ -45,7 +48,8 @@ blog-markdown-YYYY-MM-DD.zip
       └─ books/原URL中的目录/cover.webp
 ```
 
-保留文章原文件名，避免不同文章重名。所有图片统一按
+保留文章与作品的原文件名。作品记录放入 `reviews/`，与鉴赏栏目 `/reviews/` 的命名一致；
+文章在 `posts/`，二者目录不同，不会互相覆盖。所有图片统一按
 `images/<域名>/<原始URL路径>` 保存，不根据所属文章或头像、背景等用途重新
 分类。上述目录仅是例子：实际结构以原 URL 为准。同一 URL 在同一 ZIP 中
 只保存一次，新增引用文章不会改变其目录。不同 SVG fragment 共用文件但
@@ -58,12 +62,19 @@ blog-markdown-YYYY-MM-DD.zip
 百分号编码保存；编码的斜杠不会变成目录分隔符。无文件名的地址使用
 `image` 加 MIME 类型推导的扩展名。实际映射始终记录在清单中。
 
-`posts/` 中的 Markdown 图片 URL 替换为
+`posts/` 与 `reviews/` 中的 Markdown 图片 URL 替换为
 `../images/image.yurich.me/books/原URL中的目录/cover.webp`。按源文本位置
 替换，不能全局替换字符串，避免改动普通链接和代码示例。引用式图片只
-重写其定义；如果普通链接共用同一定义，它也指向同一张本地图片。
+重写其定义；如果普通链接共用同一定义，它也指向同一张本地图片。作品 front
+matter 中的 `image` 封面 URL 同样重写为相对路径；文章 front matter 里的
+`works` 作品 id 列表保持原样；正文中的 `{% include work-card.html id="作品id" %}`
+在原位置展开为普通 Markdown：作品名、主创、当前个人评分、相对路径封面，以及
+指向 `../reviews/<原文件名>` 的作品记录链接。未评分和无封面时省略对应内容。
+代码示例、HTML 注释及 Liquid raw/comment 块内的卡片语法不改写；动态 id 等
+无法可靠展开的调用会中止导出，不静默遗漏。封面与其他图片按相同规则去重。
 
-`manifest.json` 的输出版本为 3，包含导出时间、文章源路径、线上文章地址、原图片 URL、本地
+`manifest.json` 的输出版本为 4，包含导出时间、文章源路径、公开作品（id、源路径与线上地址）、
+线上文章地址、原图片 URL、本地
 图片路径、引用文章与行号、网站图片角色、Content-Type 和 SHA-256。行号
 仅用于定位当次快照，恢复时应以原 URL 和对象路径为准。查询参数保留在
 原 URL 中，恢复 S3 时不能把它误当成对象名。URI 路径应解码一次。
@@ -78,8 +89,10 @@ ZIP 不依赖 Jekyll、Python 或本地 HTTP 服务器来阅读。
 
 ## 实现与构建
 
-1. `_plugins/blog-export-input.rb` 根据 Jekyll 发布文章集合生成私有输入
-   `.jekyll-cache/blog-export.json`，不使用 `_posts` 文件遍历，也不发布该输入。
+1. `_plugins/blog-export-input.rb` 根据 Jekyll 发布文章集合与公开作品集合生成私有输入
+   `.jekyll-cache/blog-export.json`（schema_version 3），不使用文件遍历，也不发布该输入。
+   文章和作品均记录实际渲染图片。作品卡片封面通过原位置展开获得可导出的引用，
+   不按 CSS 类名绕过图片核对。
 2. `tools/export_blog.py` 使用 Python 标准库解析并替换图片引用、读取本地
    图片或下载远程图片、生成清单与 ZIP。
 3. `_includes/metadata-hook.html` 和 `assets/js/blog-export.js` 将下载链接
@@ -91,6 +104,7 @@ JEKYLL_ENV=production bundle exec jekyll build
 python tools/export_blog.py
 python -B -m unittest discover -s tools/tests -p 'test_*.py'
 bundle exec ruby tools/test_blog_export_input.rb
+bundle exec ruby tools/test_works_validation.rb
 bundle exec ruby tools/check_site.rb
 ```
 
@@ -110,13 +124,18 @@ Python 需要 3.10 或以上。Jekyll 开发服务器不会自动运行 Python �
 远程下载使用超时和重试；默认单张图片上限 32 MB，可通过
 `--max-image-mb` 调整。空文件、非图片响应、缺失文件或下载失败都会让导出
 失败。不会静默跳过图片，也不会用残缺 ZIP 覆盖上一份成功导出。
-还会核对文章实际渲染的图片；如果 Liquid include 等产生了无法在 Markdown
+还会核对文章与作品实际渲染的图片；如果 Liquid include 等产生了无法在 Markdown
 中定位的图片，导出会报错，要求先采用可导出的图片写法。
 构建失败会阻止本次部署，线上上一份成功的部署继续保留。
 
 测试必须覆盖：相对路径在解压后能找到文件、共享图片去重、同名 URL 冲突、
 引用式图片与 HTML 图片、代码示例和普通链接不被误改、封面元数据、中文
 URL、CDN/baseurl/media_subpath、下载失败不覆盖旧包及发布集合不泄露草稿。
+作品相关用例：作品写入 `reviews/` 且封面与正文图片按同一套规则重写、
+文章与作品共用封面只下载一份、文章 front matter 的 `works` 列表原样保留、
+卡片在原位置展开且封面与作品链接在解压后可访问、代码示例不被展开、
+不存在或动态卡片引用及作品 include 图片中止导出且不覆盖旧包、
+未公开作品不进入导出输入、非法作品记录与 S3 签名地址让构建期校验失败。
 增加新图片用法时同步补充样例。手动验证应解压包并在断网后打开 Markdown。
 
 这是公开下载包，只包含可公开发布的内容。导出包能恢复已发布图片，但不

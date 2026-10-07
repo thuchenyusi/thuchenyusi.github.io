@@ -1,0 +1,27 @@
+# 鉴赏栏目的类型与状态文案；works-validation.rb 保证字段值落在这里的键内。
+type:
+  book: 书籍
+  movie: 电影
+  anime: 动画
+  game: 游戏
+status:
+  wish:
+    book: 想读
+    movie: 想看
+    anime: 想看
+    game: 想玩
+  doing:
+    book: 在读
+    movie: 在看
+    anime: 在看
+    game: 在玩
+  done:
+    book: 读过
+    movie: 看过
+    anime: 看过
+    game: 玩过
+  dropped:
+    book: 弃读
+    movie: 弃看
+    anime: 弃看
+    game: 弃玩

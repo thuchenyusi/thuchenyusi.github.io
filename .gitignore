@@ -30,3 +30,6 @@ _sass/vendors
 assets/js/dist
 
 .ruby-lsp/
+
+# Visual review screenshots (local only)
+screenshots

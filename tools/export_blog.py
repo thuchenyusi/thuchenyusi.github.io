@@ -202,6 +202,28 @@ def split_front_matter(markdown):
     return (markdown[:match.end()], match.end()) if match else ("", 0)
 
 
+def work_card_spans(markdown):
+    """Locate literal card includes, preserving code/raw examples and offsets."""
+    _, body_start = split_front_matter(markdown)
+    body = markdown[body_start:]
+    masked = mask_code(body)
+    masked = re.sub(
+        r"\{%-?\s*(raw|comment)\s*-?%\}.*?\{%-?\s*end\1\s*-?%\}",
+        lambda match: re.sub(r"[^\r\n]", " ", match[0]), masked, flags=re.S
+    )
+    for match in re.finditer(r"\{%-?\s*include\s+work-card\.html\b(.*?)\s*-?%\}", masked, re.S):
+        args = re.fullmatch(r"\s+id\s*=\s*([\"'])([a-z0-9][a-z0-9-]*)\1\s*", match[1])
+        if not args:
+            raise ExportError('Exportable work cards must use include work-card.html id="literal-id"')
+        yield body_start + match.start(), body_start + match.end(), args[2]
+
+
+def markdown_text(value):
+    """Escape one-line metadata used as Markdown text (not as HTML)."""
+    text = html.escape(" ".join(str(value).split()), quote=False)
+    return re.sub(r"([\\`*{}\[\]()#!_|])", r"\\\1", text)
+
+
 def front_image_span(front, expected):
     if not expected:
         return None
@@ -303,6 +325,32 @@ class Exporter:
         self.timeout = timeout
         self.limit = max_image_mb * 1024 * 1024
         self.resources = {}
+        self.works = {}
+        for work in config.get("works", []):
+            if work["id"] in self.works:
+                raise ExportError(f"Duplicate exported work id: {work['id']}")
+            self.works[work["id"]] = work
+
+    def referenced_work(self, work_id):
+        if work_id not in self.works:
+            raise ExportError(f"Work card references a missing or unpublished work: {work_id}")
+        return self.works[work_id]
+
+    def work_card(self, entry, directory, start, work_id):
+        work = self.referenced_work(work_id)
+        title = markdown_text(work["title"])
+        lines = [f"**[{title}](../reviews/{quote(work['filename'], safe='')})**"]
+        if work.get("creator"):
+            lines += ["", markdown_text(work["creator"])]
+        if work.get("rating") is not None:
+            lines += ["", f"我的评分：{work['rating']:.1f} / 10"]
+        image = work.get("front_image")
+        if image:
+            path = self.add_image(image, self.entry_use(entry, directory, start), work.get("media_subpath", ""))
+            if not path.startswith("data:image/"):
+                path = "../" + quote(path, safe="/#")
+            lines += ["", f"![{title}](<{path}>)"]
+        return "\n\n" + "\n".join(lines) + "\n\n"
 
     def fetch(self, url):
         parts = urlsplit(url)
@@ -386,83 +434,99 @@ class Exporter:
             self.resources[url]["path"] = path
 
     @staticmethod
-    def post_spans(post):
-        markdown = post["markdown"]
+    def entry_spans(entry):
+        markdown = entry["markdown"]
         front, body_start = split_front_matter(markdown)
         spans = [(a + body_start, b + body_start) for a, b in image_spans(markdown[body_start:])]
-        front_span = front_image_span(front, post.get("front_image"))
+        front_span = front_image_span(front, entry.get("front_image"))
         if front_span:
             spans.append(front_span)
         return sorted(set(spans))
 
     @staticmethod
-    def post_use(post, start):
+    def entry_use(entry, directory, start):
         return {
-            "source": post["source"],
-            "markdown": "posts/" + post["filename"],
-            "line": post["markdown"].count("\n", 0, start) + 1
+            "source": entry["source"],
+            "markdown": directory + "/" + entry["filename"],
+            "line": entry["markdown"].count("\n", 0, start) + 1
         }
 
-    def rewrite_post(self, post):
-        markdown = post["markdown"]
+    def rewrite_entry(self, entry, directory):
+        markdown = entry["markdown"]
         replacements = []
-        post_images = set()
-        for start, end in self.post_spans(post):
+        entry_images = set()
+        for start, end in self.entry_spans(entry):
             raw = markdown[start:end]
-            local = self.add_image(raw, self.post_use(post, start), post.get("media_subpath", ""))
+            local = self.add_image(raw, self.entry_use(entry, directory, start), entry.get("media_subpath", ""))
             if not local.startswith("data:image/"):
-                resolved = canonical_url(raw, self.config, post.get("media_subpath", ""))
-                post_images.add(urlunsplit(urlsplit(resolved)._replace(fragment="")))
+                resolved = canonical_url(raw, self.config, entry.get("media_subpath", ""))
+                entry_images.add(urlunsplit(urlsplit(resolved)._replace(fragment="")))
                 replacements.append((start, end, "../" + quote(local, safe="/#")))
+        for start, end, work_id in work_card_spans(markdown):
+            replacements.append((start, end, self.work_card(entry, directory, start, work_id)))
+            work = self.referenced_work(work_id)
+            if work.get("front_image"):
+                resolved = canonical_url(work["front_image"], self.config, work.get("media_subpath", ""))
+                entry_images.add(urlunsplit(urlsplit(resolved)._replace(fragment="")))
         for start, end, replacement in sorted(replacements, reverse=True):
             markdown = markdown[:start] + replacement + markdown[end:]
-        for rendered in post.get("rendered_images", []):
+        for rendered in entry.get("rendered_images", []):
             if rendered.startswith("data:image/"):
                 continue
             absolute = urljoin(self.config["site_url"].rstrip("/") + "/", html.unescape(rendered))
             required = urlsplit(canonical_url(absolute, self.config))._replace(fragment="")
-            if urlunsplit(required) not in post_images:
-                raise ExportError(f"Image in {post['source']} has no exportable Markdown reference: {rendered}")
+            if urlunsplit(required) not in entry_images:
+                raise ExportError(f"Image in {entry['source']} has no exportable Markdown reference: {rendered}")
         return markdown
 
     def write(self, output):
-        posts = {}
-        for post in self.config["posts"]:
-            filename = post["filename"]
-            if Path(filename).name != filename or not filename.endswith((".md", ".markdown")):
-                raise ExportError(f"Invalid post filename: {filename}")
-            path = "posts/" + filename
-            if path in posts:
-                raise ExportError(f"Duplicate exported filename: {filename}")
-            posts[path] = None
-            for start, end in self.post_spans(post):
-                self.add_image(post["markdown"][start:end], self.post_use(post, start),
-                               post.get("media_subpath", ""))
+        collections = (("posts", self.config["posts"]), ("reviews", self.config.get("works", [])))
+        entries = {}
+        for directory, records in collections:
+            for record in records:
+                filename = record["filename"]
+                if Path(filename).name != filename or not filename.endswith((".md", ".markdown")):
+                    raise ExportError(f"Invalid exported filename: {filename}")
+                path = directory + "/" + filename
+                if path in entries:
+                    raise ExportError(f"Duplicate exported filename: {filename}")
+                entries[path] = None
+                for start, end in self.entry_spans(record):
+                    self.add_image(record["markdown"][start:end], self.entry_use(record, directory, start),
+                                   record.get("media_subpath", ""))
+                for start, _, work_id in work_card_spans(record["markdown"]):
+                    work = self.referenced_work(work_id)
+                    if work.get("front_image"):
+                        self.add_image(work["front_image"], self.entry_use(record, directory, start),
+                                       work.get("media_subpath", ""))
         for image in self.config["site_images"]:
             self.add_image(image["url"], {"role": image["role"]})
         self.assign_image_paths()
-        for post in self.config["posts"]:
-            posts["posts/" + post["filename"]] = self.rewrite_post(post)
+        for directory, records in collections:
+            for record in records:
+                entries[directory + "/" + record["filename"]] = self.rewrite_entry(record, directory)
         site_images = []
         for image in self.config["site_images"]:
             path = self.add_image(image["url"], {"role": image["role"]})
             site_images.append({"role": image["role"], "path": path})
         manifest = {
-            "schema_version": 3,
+            "schema_version": 4,
             "generated_at": self.config["generated_at"],
             "site_url": self.config["site_url"],
             "posts": [{key: post[key] for key in ("source", "filename", "title", "url")}
                       for post in self.config["posts"]],
+            "works": [{key: work[key] for key in ("id", "source", "filename", "title", "url")}
+                      for work in self.config.get("works", [])],
             "site_images": site_images,
             "images": [{"url": url, **{key: value for key, value in resource.items() if key != "data"}}
                        for url, resource in sorted(self.resources.items())]
         }
         readme = [f"# {self.config['title']}：Markdown 导出", "",
                   f"导出时间：{self.config['generated_at']}", "",
-                  "解压整个 ZIP，保留 posts 与 images 的相对位置。用支持 Markdown 的阅读器打开 posts 中的文章即可。",
+                  "解压整个 ZIP，保留 posts、reviews 与 images 的相对位置。用支持 Markdown 的阅读器打开 posts 中的文章、reviews 中的作品记录即可。",
                   "所有图片按原 URL 保存到 images/<域名>/<原始路径>，同一 URL 只保存一份，不按文章或用途分类。",
                   "Markdown 已使用相对路径引用图片；普通外部链接仍需联网访问。",
-                  "此包包含已发布文章和引用到的图片，不包含草稿、网站运行依赖或未引用的原始图片。",
+                  "此包包含已发布文章、公开作品记录和引用到的图片，不包含草稿、未公开作品、网站运行依赖或未引用的原始图片。",
                   "manifest.json 记录原图片地址、使用位置与 SHA-256，可用于校验和恢复云端对象。", "",
                   "## 网站图片", ""]
         for image in site_images:
@@ -472,6 +536,12 @@ class Exporter:
         for post in self.config["posts"]:
             title = re.sub(r"([\[\]\\])", r"\\\1", post["title"]).replace("\n", " ")
             readme.append(f"- [{title}](posts/{quote(post['filename'])})")
+        works = self.config.get("works", [])
+        if works:
+            readme += ["", "## 作品", ""]
+            for work in works:
+                title = re.sub(r"([\[\]\\])", r"\\\1", work["title"]).replace("\n", " ")
+                readme.append(f"- [{title}](reviews/{quote(work['filename'])})")
         output = Path(output)
         output.parent.mkdir(parents=True, exist_ok=True)
         # Atomically replace only after all downloads and ZIP integrity checks pass.
@@ -479,7 +549,7 @@ class Exporter:
             temporary = Path(handle.name)
         try:
             with zipfile.ZipFile(temporary, "w", zipfile.ZIP_DEFLATED) as archive:
-                for path, content in posts.items():
+                for path, content in entries.items():
                     archive.writestr(path, content)
                 for resource in self.resources.values():
                     archive.writestr(resource["path"], resource["data"])
@@ -491,7 +561,7 @@ class Exporter:
             temporary.replace(output)
         finally:
             temporary.unlink(missing_ok=True)
-        return len(posts), len(self.resources)
+        return len(self.config["posts"]), len(works), len(self.resources)
 
 
 def main():
@@ -505,7 +575,7 @@ def main():
     args = parser.parse_args()
     try:
         config = json.loads(args.input.read_text(encoding="utf-8"))
-        if config.get("schema_version") != 1:
+        if config.get("schema_version") != 3:
             raise ExportError("Unsupported export input version")
         if config.get("enabled") is False:
             print("Markdown export is disabled in _config.yml")
@@ -513,10 +583,10 @@ def main():
         if args.timeout < 1 or args.max_image_mb < 1:
             raise ExportError("Timeout and image size limit must be positive")
         output = args.output or args.site_dir / "downloads/blog-markdown.zip"
-        posts, images = Exporter(config, args.site_dir, args.timeout, args.max_image_mb).write(output)
+        posts, works, images = Exporter(config, args.site_dir, args.timeout, args.max_image_mb).write(output)
     except (ExportError, OSError, ValueError, KeyError) as exc:
         parser.exit(1, f"Markdown export failed: {exc}\n")
-    print(f"Exported {posts} posts and {images} images to {output}")
+    print(f"Exported {posts} posts, {works} works and {images} images to {output}")
 
 
 if __name__ == "__main__":

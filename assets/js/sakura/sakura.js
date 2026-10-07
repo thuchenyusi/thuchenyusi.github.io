@@ -111,7 +111,7 @@
 
                 // Build animation
                 var animations =
-                    'fall ' + fallTime + 's linear 0s 1' + ', ' +
+                    'fall ' + fallTime + 's linear 0s 1 forwards' + ', ' +
                     blowAnimation + ' ' + (((fallTime > 30 ? fallTime : 30) - 20) + randomInt(0, 20)) + 's linear 0s infinite' + ', ' +
                     swayAnimation + ' ' + randomInt(2, 4) + 's linear 0s infinite';
 
@@ -120,9 +120,9 @@
                 var height = randomInt(options.minSize, options.maxSize);
                 var width = height - Math.floor(randomInt(0, options.minSize) / 3);
 
-                // Apply Event Listener to remove petals that reach the bottom of the page
-                petal.prefixedEvent('AnimationEnd', function () {
-                    if (!elementInViewport(this)) {
+                // Remove petals when their fall ends, even if they are still in the viewport.
+                petal.prefixedEvent('AnimationEnd', function (ev) {
+                    if (ev.animationName === 'fall') {
                         $(this).remove();
                     }
                 })

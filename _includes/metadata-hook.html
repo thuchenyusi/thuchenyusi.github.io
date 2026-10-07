@@ -1,7 +1,7 @@
 <!-- Keep site customizations outside the theme's layouts. -->
 {% include sakura_head.html %}
 <template id="sakana-template">{% include sakana.html %}</template>
-<script defer src="{{ '/assets/js/sakana/sakana.js' | relative_url }}"></script>
+<script defer src="https://cdn.jsdelivr.net/gh/{{ site.sakana.repository }}@{{ site.sakana.revision }}/html/sakana.min.js"></script>
 <script defer src="{{ '/assets/js/sakana/sakana_init.js' | relative_url }}"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script defer src="{{ '/assets/js/sakura/sakura.js' | relative_url }}"></script>

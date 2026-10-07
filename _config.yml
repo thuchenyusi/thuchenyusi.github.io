@@ -25,6 +25,11 @@ description: >- # used by seo meta and the atom feed
 # E.g. 'https://username.github.io', note that it does not end with a '/'.
 url: "https://blog.yurich.me"
 
+# Sakana core: pin a commit from the fork; see docs/theme-maintenance.md.
+sakana:
+  repository: thuchenyusi/sakana
+  revision: "7e08fe5ea69d0db57c42d1d94882524ad2f21897"
+
 github:
   username: thuchenyusi # change to your GitHub username
 

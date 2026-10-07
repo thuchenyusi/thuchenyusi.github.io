@@ -28,6 +28,29 @@ For future theme updates, update Gemfile and Gemfile.lock, compare the upstream
 _config.yml and static-assets revision, then repeat these checks. Pull requests
 build and check the site; only the default branch deploys to GitHub Pages.
 
+## Sakana version maintenance
+
+The metadata hook loads `html/sakana.min.js` from the `thuchenyusi/sakana`
+fork through jsDelivr. `_config.yml` records the repository in
+`sakana.repository` and pins its complete commit SHA in `sakana.revision`.
+Updating the fork alone does not change the version used by the blog.
+
+To upgrade, sync the fork and confirm that the selected commit contains the
+updated `html/sakana.min.js` build, then replace `sakana.revision` with that
+commit's complete SHA. Verify the exact CDN URL returns the expected script,
+run the checks above, and deploy the blog. To roll back, restore the previous
+SHA and deploy again. Keep published tags unchanged if using a tag instead.
+
+`assets/js/sakana/sakana_init.js` and `_includes/sakana.html` remain local.
+They provide the mobile breakpoint, scale, deferred initialization, expansion
+state and collapse controls. Keep the deferred core script before the deferred
+initialization script. After an upgrade, verify desktop dragging and character
+switching, plus mobile expansion, dragging, switching, outside-click collapse,
+saved expansion state and viewport changes. The site checker only checks local
+resource references; CDN availability and widget behavior need separate checks.
+
+## Markdown export
+
 The footer's **导出全站** link downloads published Markdown posts, public work
 records and their images as a ZIP with local relative image paths. The deployment
 builds this archive automatically. See [blog-export.md](blog-export.md) for the

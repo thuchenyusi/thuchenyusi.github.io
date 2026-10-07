@@ -1,5 +1,12 @@
 # Repository guidance
 
+- Before changing the theme, site overrides or upgrade process, read
+  [docs/theme-maintenance.md](docs/theme-maintenance.md) for the integration
+  conventions and validation commands.
+- Before changing review records, the gallery or article work references, read
+  [docs/reviews.md](docs/reviews.md) for the data schema and authoring conventions.
+- Keep README prose in English and link to detailed guides in `docs/`. Keep those
+  guides focused on implemented behavior; omit design discussions and roadmaps.
 - Keep Chirpy layouts and core assets in the theme gem; use the existing metadata
   hook and custom CSS for site additions.
 - Before changing image URLs, site image configuration, Markdown processing,

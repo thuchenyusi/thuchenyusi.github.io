@@ -1,0 +1,35 @@
+# Theme maintenance
+
+The site uses the Chirpy 7.6 gem (locked to 7.6.0), including its layouts, scripts,
+styles and translations. Keep theme files in the gem instead of copying them
+into this repository: local copies override updates from the gem.
+
+Site additions use the metadata hook, existing favicons, custom CSS,
+Sakana/sakura widgets, additional locale tab labels and review collection
+templates/scripts. The review layout extends the theme's page layout.
+The assets/lib submodule matches Chirpy v7.6.0
+(5cde3f0076b62e45fc68291893cf7d93e122adb7).
+The small /sw.js bridge upgrades visitors with a Chirpy 5 service worker.
+
+Use Ruby 3.4, initialize submodules, and run:
+
+~~~sh
+git submodule update --init
+bundle install
+JEKYLL_ENV=production bundle exec jekyll build
+python tools/export_blog.py
+python -B -m unittest discover -s tools/tests -p 'test_*.py'
+bundle exec ruby tools/test_blog_export_input.rb
+bundle exec ruby tools/test_works_validation.rb
+bundle exec ruby tools/check_site.rb
+~~~
+
+For future theme updates, update Gemfile and Gemfile.lock, compare the upstream
+_config.yml and static-assets revision, then repeat these checks. Pull requests
+build and check the site; only the default branch deploys to GitHub Pages.
+
+The footer's **导出全站** link downloads published Markdown posts, public work
+records and their images as a ZIP with local relative image paths. The deployment
+builds this archive automatically. See [blog-export.md](blog-export.md) for the
+archive layout, image conventions and local export commands. Python 3.10+ is
+required to generate the archive; reading it only needs a Markdown reader.

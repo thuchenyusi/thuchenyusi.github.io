@@ -30,6 +30,12 @@ sakana:
   repository: thuchenyusi/sakana
   revision: "7e08fe5ea69d0db57c42d1d94882524ad2f21897"
 
+# Sakura core: pin the same commit for CSS and JS; see docs/theme-maintenance.md.
+sakura:
+  enabled: true
+  repository: thuchenyusi/sakura
+  revision: "1099edd02041fbf57a613b5b100baf2111cc0435"
+
 github:
   username: thuchenyusi # change to your GitHub username
 

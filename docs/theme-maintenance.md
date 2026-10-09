@@ -65,6 +65,31 @@ switching, plus mobile expansion, dragging, switching, outside-click collapse,
 saved expansion state and viewport changes. The site checker only checks local
 resource references; CDN availability and widget behavior need separate checks.
 
+## Sakura version maintenance
+
+The metadata hook loads `dist/sakura.min.css` and `dist/sakura.min.js` from
+`thuchenyusi/sakura` through jsDelivr. `_config.yml` records the fork in
+`sakura.repository` and pins the same complete commit SHA for both assets in
+`sakura.revision`. Set `sakura.enabled` to `false` to omit the stylesheet,
+core script and initialization script. Updating the fork alone does not change
+the blog's selected version.
+
+`assets/js/sakura/sakura_init.js` remains local. It initializes body petals with
+`position: 'fixed'` and `hideScrollbars: false` so they stay in the viewport
+while scrolling and preserve the page's overflow styles and sticky elements.
+The core defaults retain the pink gradient, 10–14 px size, fall speed of 1 and
+300 ms interval. The deferred core script precedes the deferred initializer;
+if the core fails to load, the initializer leaves the page usable without the
+effect. Sakura does not require jQuery.
+
+To upgrade, confirm that the fork's selected commit contains the tested
+`dist/sakura.min.js` and matching stylesheet, then update `sakura.revision`.
+Verify both exact CDN URLs return the expected files, run the checks above,
+and check the home page, long posts and mobile layouts for scrolling, sticky
+navigation, unexpected scrollbars and accumulating petals. To roll back a
+version update, restore the previous SHA and deploy. To restore the former
+jQuery integration, revert the migration commit and deploy.
+
 ## Markdown export
 
 The footer's **导出全站** link downloads published Markdown posts, public work

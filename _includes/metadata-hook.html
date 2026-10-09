@@ -1,10 +1,14 @@
 <!-- Keep site customizations outside the theme's layouts. -->
-{% include sakura_head.html %}
+{% if site.sakura.enabled %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/{{ site.sakura.repository }}@{{ site.sakura.revision }}/dist/sakura.min.css">
+{% endif %}
 <template id="sakana-template">{% include sakana.html %}</template>
 <script defer src="https://cdn.jsdelivr.net/gh/{{ site.sakana.repository }}@{{ site.sakana.revision }}/html/sakana.min.js"></script>
 <script defer src="{{ '/assets/js/sakana/sakana_init.js' | relative_url }}"></script>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script defer src="{{ '/assets/js/sakura/sakura.js' | relative_url }}"></script>
+{% if site.sakura.enabled %}
+<script defer src="https://cdn.jsdelivr.net/gh/{{ site.sakura.repository }}@{{ site.sakura.revision }}/dist/sakura.min.js"></script>
+<script defer src="{{ '/assets/js/sakura/sakura_init.js' | relative_url }}"></script>
+{% endif %}
 {% if site.blog_export.enabled %}
 <template id="blog-export-template">
   <span class="blog-export-row">

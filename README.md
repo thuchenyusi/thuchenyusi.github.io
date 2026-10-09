@@ -15,7 +15,7 @@ My Personal blog | Made With Jekyll
 - Thanks [chirpy](https://github.com/cotes2020/jekyll-theme-chirpy) for its blog theme.
 - Thanks [しち](https://www.pixiv.net/users/4313649) for hir [illustration](https://www.pixiv.net/artworks/43254374).
 - Thanks [トトロ](https://github.com/itorr) and [大伏アオ](https://twitter.com/blue00f4) for the [「Sakana!」](https://github.com/itorr/sakana).
-- Thanks Naomi Forame, [Timo Schäfer](https://github.com/nayleen) and [Jeroen Hammann](https://github.com/jhammann) for the [「Sakura」](https://github.com/jhammann/sakura).
+- Thanks Naomi Forame, [Timo Schäfer](https://github.com/nayleen) and [Jeroen Hammann](https://github.com/jhammann) for the [Sakura.js](https://github.com/jhammann/sakura).
 
 ## License
 
